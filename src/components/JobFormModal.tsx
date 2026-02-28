@@ -22,28 +22,68 @@ const emptyDraft = (): JobDraft => ({
 
 const urlPattern = /^https?:\/\//i;
 
+const trimOptional = (value?: string): string | undefined => {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : undefined;
+};
+
 export const JobFormModal = ({ isOpen, initial, title, onClose, onSave }: Props) => {
   const [error, setError] = useState<string | null>(null);
+  const [step, setStep] = useState<1 | 2>(1);
   const [draft, setDraft] = useState<JobDraft>(initial ?? emptyDraft());
 
   useEffect(() => {
     setDraft(initial ?? emptyDraft());
+    setStep(1);
+    setError(null);
   }, [initial, isOpen]);
 
   if (!isOpen) {
     return null;
   }
 
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-
+  const validateRequiredStep = (): string | null => {
     if (!draft.company.trim() || !draft.roleTitle.trim() || !draft.sourceUrl.trim() || !draft.dateAdded || !draft.status) {
-      setError("Company, role title, source URL, date added, and status are required.");
-      return;
+      return "Company, role title, source URL, date added, and status are required.";
     }
 
     if (!urlPattern.test(draft.sourceUrl)) {
-      setError("Source URL must start with http:// or https://");
+      return "Source URL must start with http:// or https://";
+    }
+
+    return null;
+  };
+
+  const patchDraft = (changes: Partial<JobDraft>) => {
+    setDraft((value) => ({ ...value, ...changes }));
+    if (error) {
+      setError(null);
+    }
+  };
+
+  const continueToOptionalStep = () => {
+    const validationError = validateRequiredStep();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    setError(null);
+    setStep(2);
+  };
+
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+
+    if (step === 1) {
+      continueToOptionalStep();
+      return;
+    }
+
+    const validationError = validateRequiredStep();
+    if (validationError) {
+      setStep(1);
+      setError(validationError);
       return;
     }
 
@@ -52,7 +92,11 @@ export const JobFormModal = ({ isOpen, initial, title, onClose, onSave }: Props)
       company: draft.company.trim(),
       roleTitle: draft.roleTitle.trim(),
       sourceUrl: draft.sourceUrl.trim(),
-      tags: draft.tags
+      location: trimOptional(draft.location),
+      salaryText: trimOptional(draft.salaryText),
+      sourceType: trimOptional(draft.sourceType),
+      notes: trimOptional(draft.notes),
+      tags: draft.tags.map((tag) => tag.trim()).filter(Boolean)
     });
     setError(null);
   };
@@ -67,111 +111,122 @@ export const JobFormModal = ({ isOpen, initial, title, onClose, onSave }: Props)
           </button>
         </header>
 
-        <div className="form-grid">
-          <label>
-            Company *
-            <input
-              value={draft.company}
-              onChange={(event) => setDraft((value) => ({ ...value, company: event.target.value }))}
-            />
-          </label>
-
-          <label>
-            Role Title *
-            <input
-              value={draft.roleTitle}
-              onChange={(event) => setDraft((value) => ({ ...value, roleTitle: event.target.value }))}
-            />
-          </label>
-
-          <label>
-            Source URL *
-            <input
-              value={draft.sourceUrl}
-              onChange={(event) => setDraft((value) => ({ ...value, sourceUrl: event.target.value }))}
-              placeholder="https://..."
-            />
-          </label>
-
-          <label>
-            Date Added *
-            <input
-              type="date"
-              value={draft.dateAdded}
-              onChange={(event) => setDraft((value) => ({ ...value, dateAdded: event.target.value }))}
-            />
-          </label>
-
-          <label>
-            Status *
-            <select
-              value={draft.status}
-              onChange={(event) => setDraft((value) => ({ ...value, status: event.target.value as JobStatus }))}
-            >
-              {JOB_STATUSES.map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label>
-            Location
-            <input
-              value={draft.location ?? ""}
-              onChange={(event) => setDraft((value) => ({ ...value, location: event.target.value }))}
-            />
-          </label>
-
-          <label>
-            Salary
-            <input
-              value={draft.salaryText ?? ""}
-              onChange={(event) => setDraft((value) => ({ ...value, salaryText: event.target.value }))}
-            />
-          </label>
-
-          <label>
-            Source Type
-            <input
-              value={draft.sourceType ?? ""}
-              onChange={(event) => setDraft((value) => ({ ...value, sourceType: event.target.value }))}
-              placeholder="LinkedIn, Referral, Company site"
-            />
-          </label>
-
-          <label className="span-2">
-            Tags (comma separated)
-            <input
-              value={draft.tags.join(", ")}
-              onChange={(event) =>
-                setDraft((value) => ({
-                  ...value,
-                  tags: event.target.value
-                    .split(",")
-                    .map((item) => item.trim())
-                    .filter(Boolean)
-                }))
-              }
-            />
-          </label>
-
-          <label className="span-2">
-            Notes
-            <textarea
-              rows={5}
-              value={draft.notes ?? ""}
-              onChange={(event) => setDraft((value) => ({ ...value, notes: event.target.value }))}
-            />
-          </label>
+        <div className="form-stepper" aria-live="polite">
+          <p className="step-count">Step {step} of 2</p>
+          <ol className="step-list" aria-hidden>
+            <li className={step === 1 ? "active" : "complete"}>Required details</li>
+            <li className={step === 2 ? "active" : ""}>Optional details</li>
+          </ol>
+          <p className="step-hint">
+            {step === 1
+              ? "Enter the essentials first so you can quickly save the job."
+              : "Add optional context like notes or salary, or leave anything blank."}
+          </p>
         </div>
+
+        {step === 1 ? (
+          <div className="form-grid">
+            <label>
+              Company *
+              <input value={draft.company} onChange={(event) => patchDraft({ company: event.target.value })} required />
+            </label>
+
+            <label>
+              Role Title *
+              <input value={draft.roleTitle} onChange={(event) => patchDraft({ roleTitle: event.target.value })} required />
+            </label>
+
+            <label>
+              Source URL *
+              <input
+                value={draft.sourceUrl}
+                onChange={(event) => patchDraft({ sourceUrl: event.target.value })}
+                placeholder="https://..."
+                required
+              />
+            </label>
+
+            <label>
+              Date Added *
+              <input
+                type="date"
+                value={draft.dateAdded}
+                onChange={(event) => patchDraft({ dateAdded: event.target.value })}
+                required
+              />
+            </label>
+
+            <label>
+              Status *
+              <select value={draft.status} onChange={(event) => patchDraft({ status: event.target.value as JobStatus })}>
+                {JOB_STATUSES.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        ) : (
+          <div className="form-grid">
+            <label>
+              Location
+              <input value={draft.location ?? ""} onChange={(event) => patchDraft({ location: event.target.value })} />
+            </label>
+
+            <label>
+              Salary
+              <input value={draft.salaryText ?? ""} onChange={(event) => patchDraft({ salaryText: event.target.value })} />
+            </label>
+
+            <label className="span-2">
+              Source Type
+              <input
+                value={draft.sourceType ?? ""}
+                onChange={(event) => patchDraft({ sourceType: event.target.value })}
+                placeholder="LinkedIn, Referral, Company site"
+              />
+            </label>
+
+            <label className="span-2">
+              Tags (comma separated)
+              <input
+                value={draft.tags.join(", ")}
+                onChange={(event) =>
+                  patchDraft({
+                    tags: event.target.value
+                      .split(",")
+                      .map((item) => item.trim())
+                      .filter(Boolean)
+                  })
+                }
+              />
+            </label>
+
+            <label className="span-2">
+              Notes
+              <textarea rows={5} value={draft.notes ?? ""} onChange={(event) => patchDraft({ notes: event.target.value })} />
+            </label>
+          </div>
+        )}
 
         {error && <p className="error">{error}</p>}
 
         <div className="modal-actions">
+          {step === 2 && (
+            <button
+              className="secondary"
+              type="button"
+              onClick={() => {
+                setStep(1);
+                setError(null);
+              }}
+            >
+              Back
+            </button>
+          )}
           <button className="primary" type="submit">
-            Save
+            {step === 1 ? "Continue" : "Save Job"}
           </button>
         </div>
       </form>

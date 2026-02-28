@@ -8,7 +8,8 @@ test("create and inspect a job", async ({ page }) => {
   await page.getByLabel("Company *").fill("Acme Co");
   await page.getByLabel("Role Title *").fill("Backend Engineer");
   await page.getByLabel("Source URL *").fill("https://example.com/acme");
-  await page.getByRole("button", { name: "Save" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Save Job" }).click();
 
   const isMobile = (page.viewportSize()?.width ?? 1200) < 768;
   if (isMobile) {

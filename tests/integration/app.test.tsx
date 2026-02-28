@@ -17,7 +17,8 @@ describe("app integration", () => {
     await user.type(screen.getByLabelText(/Company/i), "Acme Inc");
     await user.type(screen.getByLabelText(/Role Title/i), "Platform Engineer");
     await user.type(screen.getByLabelText(/Source URL/i), "https://example.com/jobs/1");
-    await user.click(screen.getByRole("button", { name: "Save" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Save Job" }));
 
     expect(await screen.findAllByText("Acme Inc")).not.toHaveLength(0);
     expect(screen.getAllByText("Platform Engineer")).not.toHaveLength(0);

@@ -27,6 +27,69 @@
   margin-bottom: 0.25rem;
 }
 
+.form-stepper {
+  margin-top: 0.45rem;
+  padding: 0.68rem 0.78rem;
+  border: 1px solid #d8deea;
+  border-radius: 12px;
+  background: #f8fbff;
+}
+
+.step-count {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2f4f69;
+}
+
+.step-list {
+  margin: 0.38rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.38rem;
+}
+
+.step-list li {
+  position: relative;
+  padding-left: 1.1rem;
+  color: #5a6680;
+  font-size: 0.9rem;
+}
+
+.step-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.38rem;
+  width: 0.54rem;
+  height: 0.54rem;
+  border-radius: 999px;
+  border: 1px solid #9eacc2;
+  background: #fff;
+}
+
+.step-list li.active {
+  color: #144f56;
+  font-weight: 700;
+}
+
+.step-list li.active::before {
+  border-color: #1f7078;
+  background: #1f7078;
+}
+
+.step-list li.complete::before {
+  border-color: #1f7078;
+  background: #d5ebee;
+}
+
+.step-hint {
+  margin-top: 0.44rem;
+  font-size: 0.86rem;
+  line-height: 1.35;
+  color: #44536a;
+}
+
 .form-grid {
   margin-top: 0.75rem;
   display: grid;
@@ -43,6 +106,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 0.55rem;
+  flex-wrap: wrap;
 }
 
 .confirm-modal {
