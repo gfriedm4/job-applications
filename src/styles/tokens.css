@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@400;500;600;700&display=swap");
+
+:root {
+  --bg: #f8f4ed;
+  --bg-deep: #f2e8d9;
+  --paper: #fffdf8;
+  --paper-strong: #ffffff;
+  --ink: #1e2433;
+  --ink-soft: #536077;
+  --line: #d8dbe5;
+  --accent: #17656d;
+  --accent-2: #3f7f3d;
+  --accent-warm: #ca7f2d;
+  --danger: #b34b3e;
+  --shadow: 0 16px 40px rgba(34, 39, 53, 0.1);
+  --radius: 14px;
+}

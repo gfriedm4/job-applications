@@ -1,0 +1,83 @@
+@media (max-width: 1023px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .filters-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-shell {
+    padding: 0.85rem 0.8rem 4rem;
+  }
+
+  .app-header {
+    display: grid;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filters-bar {
+    top: 0.35rem;
+    grid-template-columns: 1fr;
+  }
+
+  .table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bulk-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .jobs-table {
+    display: none;
+  }
+
+  .mobile-cards {
+    display: grid;
+    gap: 0.62rem;
+    padding: 0.72rem;
+  }
+
+  .inline-form {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .span-2 {
+    grid-column: span 1;
+  }
+
+  .modal-backdrop {
+    padding: 0.75rem;
+  }
+
+  .modal {
+    width: calc(100vw - 1.5rem);
+    border-radius: 14px;
+  }
+
+  .floating-back {
+    display: block;
+    position: fixed;
+    right: 0.92rem;
+    bottom: 0.92rem;
+    color: #fff;
+    border-color: transparent;
+    background: linear-gradient(140deg, #1f7078, #15555c);
+  }
+}

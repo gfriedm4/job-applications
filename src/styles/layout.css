@@ -1,0 +1,66 @@
+.app-shell {
+  position: relative;
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 1.2rem 1.25rem 4rem;
+  animation: fade-in 280ms ease-out both;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.2rem;
+  align-items: flex-start;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #d5d8e3;
+  border-radius: calc(var(--radius) + 3px);
+  box-shadow: var(--shadow);
+  background:
+    linear-gradient(110deg, rgba(255, 255, 255, 0.88), rgba(249, 252, 255, 0.9)),
+    repeating-linear-gradient(
+      -25deg,
+      rgba(23, 101, 109, 0.05) 0,
+      rgba(23, 101, 109, 0.05) 14px,
+      rgba(255, 255, 255, 0.05) 14px,
+      rgba(255, 255, 255, 0.05) 28px
+    );
+  backdrop-filter: blur(6px);
+}
+
+.app-title {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.eyebrow {
+  font-size: 0.73rem;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.subtitle {
+  max-width: 74ch;
+  line-height: 1.45;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.warning {
+  margin: 0.85rem 0;
+  padding: 0.72rem 0.84rem;
+  border: 1px solid #ecc8a1;
+  border-radius: 12px;
+  background: linear-gradient(120deg, #fff1de, #ffe8ca);
+  color: #915216;
+}

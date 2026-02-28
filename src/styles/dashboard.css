@@ -1,0 +1,87 @@
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.72rem;
+  margin: 1rem 0;
+}
+
+.dashboard-heading {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.2rem 0.1rem;
+}
+
+.dashboard-heading h2 {
+  font-size: 0.92rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4b5b74;
+}
+
+.dashboard-heading p {
+  color: #5b6780;
+  font-size: 0.86rem;
+}
+
+.card {
+  display: grid;
+  gap: 0.42rem;
+  padding: 0.8rem;
+  border-radius: var(--radius);
+  border: 1px solid #d9dde8;
+  background: linear-gradient(150deg, #ffffff, #f8fbff);
+  box-shadow: 0 6px 24px rgba(43, 55, 77, 0.08);
+  animation: fade-up 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.dashboard-grid .card:nth-of-type(2) {
+  animation-delay: 35ms;
+}
+
+.dashboard-grid .card:nth-of-type(3) {
+  animation-delay: 70ms;
+}
+
+.dashboard-grid .card:nth-of-type(4) {
+  animation-delay: 105ms;
+}
+
+.dashboard-grid .card:nth-of-type(5) {
+  animation-delay: 140ms;
+}
+
+.dashboard-grid .card:nth-of-type(6) {
+  animation-delay: 175ms;
+}
+
+.card h3 {
+  font-size: 0.77rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5c687f;
+}
+
+.metric-value {
+  font-family: "IBM Plex Mono", "Menlo", monospace;
+  font-weight: 600;
+  font-size: 1.4rem;
+  color: #1f2738;
+}
+
+.card-total {
+  background: linear-gradient(150deg, #ffffff, #f4faff);
+}
+
+.card-convert {
+  background: linear-gradient(150deg, #ffffff, #f3f8f6);
+}
+
+.card-duration {
+  background: linear-gradient(150deg, #ffffff, #fcf7ef);
+}
+
+.card.alert {
+  border-color: #efcf9f;
+  background: linear-gradient(160deg, #fff6e8, #ffe9cc);
+}

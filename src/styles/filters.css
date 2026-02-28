@@ -1,0 +1,23 @@
+.filters-bar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+  align-items: end;
+  position: sticky;
+  top: 0.6rem;
+  z-index: 5;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  border: 1px solid #d4d9e6;
+  background: rgba(251, 253, 255, 0.92);
+  box-shadow: 0 12px 28px rgba(42, 50, 69, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #5b677d;
+}
