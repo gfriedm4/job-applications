@@ -68,6 +68,42 @@
     grid-template-columns: 1fr;
   }
 
+  .section-heading {
+    display: grid;
+  }
+
+  .section-subtitle {
+    max-width: none;
+  }
+
+  .section-stats {
+    justify-content: flex-start;
+  }
+
+  .section-composer {
+    padding: 0.58rem;
+  }
+
+  .reminder-item {
+    grid-template-columns: 1fr;
+    padding-left: 0.95rem;
+  }
+
+  .reminder-meta,
+  .timeline-meta {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .reminder-date-group,
+  .timeline-date-group {
+    justify-items: start;
+  }
+
+  .document-head {
+    flex-wrap: wrap;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
   }
