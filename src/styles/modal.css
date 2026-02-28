@@ -118,3 +118,33 @@
   color: #5a6680;
   line-height: 1.4;
 }
+
+.settings-modal {
+  width: min(620px, calc(100vw - 2rem));
+}
+
+.settings-grid {
+  margin-top: 0.65rem;
+}
+
+.paste-modal {
+  width: min(860px, calc(100vw - 2rem));
+}
+
+.paste-label {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.paste-label textarea {
+  min-height: 240px;
+  resize: vertical;
+}
+
+.api-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}

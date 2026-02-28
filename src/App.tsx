@@ -1,20 +1,92 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { HashRouter, Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { AiSettingsModal } from "./components/AiSettingsModal";
 import { Dashboard } from "./components/Dashboard";
 import { ImportExportPanel } from "./components/ImportExportPanel";
 import { JobDetail } from "./components/JobDetail";
 import { JobFormModal } from "./components/JobFormModal";
 import { JobsTable } from "./components/JobsTable";
+import { PasteJobDescriptionModal } from "./components/PasteJobDescriptionModal";
+import { AiSettings, loadAiSettings, saveAiSettings } from "./lib/aiSettings";
 import { JOB_STATUSES, JobStatus } from "./lib/types";
 import { selectFilteredJobs, selectJobById } from "./lib/selectors";
 import { JobDraft, StoreProvider, useStore } from "./state/store";
 
+interface AddJobMenuProps {
+  onEnterManually: () => void;
+  onPasteJobDescription: () => void;
+}
+
+const AddJobMenu = ({ onEnterManually, onPasteJobDescription }: AddJobMenuProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const onDocumentPointerDown = (event: MouseEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", onDocumentPointerDown);
+    document.addEventListener("keydown", onEscape);
+    return () => {
+      document.removeEventListener("mousedown", onDocumentPointerDown);
+      document.removeEventListener("keydown", onEscape);
+    };
+  }, [isOpen]);
+
+  const pick = (handler: () => void) => {
+    handler();
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="add-job-menu" ref={rootRef}>
+      <button
+        className="primary"
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((value) => !value)}
+      >
+        Add Job
+      </button>
+      {isOpen && (
+        <div className="add-job-menu-panel" role="menu" aria-label="add job options">
+          <button className="menu-item" type="button" role="menuitem" onClick={() => pick(onPasteJobDescription)}>
+            Paste Job Description
+          </button>
+          <button className="menu-item" type="button" role="menuitem" onClick={() => pick(onEnterManually)}>
+            Enter Manually
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const HomeView = () => {
   const { state, dispatch, exportJson, readImportFile, applyImport, storageWarning } = useStore();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [initialDraft, setInitialDraft] = useState<JobDraft | undefined>(undefined);
+  const [isPasteOpen, setIsPasteOpen] = useState(false);
+  const [isAiSettingsOpen, setIsAiSettingsOpen] = useState(false);
+  const [aiSettings, setAiSettings] = useState<AiSettings>(() => loadAiSettings());
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const jobs = useMemo(() => selectFilteredJobs(state), [state]);
+  const hasOpenAiKey = Boolean(aiSettings.openAiApiKey.trim());
 
   const toggleSelected = (id: string, selected: boolean) => {
     setSelectedIds((current) => {
@@ -28,6 +100,18 @@ const HomeView = () => {
   const onCreate = (draft: JobDraft) => {
     dispatch({ type: "createJob", payload: draft });
     setIsCreateOpen(false);
+    setInitialDraft(undefined);
+  };
+
+  const openManualCreate = () => {
+    setInitialDraft(undefined);
+    setIsCreateOpen(true);
+  };
+
+  const onAiSettingsSave = (nextSettings: AiSettings) => {
+    saveAiSettings(nextSettings);
+    setAiSettings(nextSettings);
+    setIsAiSettingsOpen(false);
   };
 
   const onSelectAll = (checked: boolean) => {
@@ -61,9 +145,16 @@ const HomeView = () => {
               Load Sample Data
             </button>
           )}
-          <button className="primary" onClick={() => setIsCreateOpen(true)}>
-            Add Job
+          <button className="secondary" onClick={() => setIsAiSettingsOpen(true)}>
+            AI Settings
           </button>
+          {hasOpenAiKey ? (
+            <AddJobMenu onEnterManually={openManualCreate} onPasteJobDescription={() => setIsPasteOpen(true)} />
+          ) : (
+            <button className="primary" onClick={openManualCreate}>
+              Add Job
+            </button>
+          )}
         </div>
       </header>
 
@@ -146,7 +237,40 @@ const HomeView = () => {
 
       <ImportExportPanel onExport={exportJson} onReadImport={readImportFile} onApplyImport={applyImport} />
 
-      <JobFormModal title="Add Job" isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} onSave={onCreate} />
+      <PasteJobDescriptionModal
+        isOpen={isPasteOpen}
+        apiKey={aiSettings.openAiApiKey}
+        model={aiSettings.openAiModel}
+        onClose={() => setIsPasteOpen(false)}
+        onOpenSettings={() => setIsAiSettingsOpen(true)}
+        onEnterManually={() => {
+          setIsPasteOpen(false);
+          openManualCreate();
+        }}
+        onDraftReady={(draft) => {
+          setInitialDraft(draft);
+          setIsPasteOpen(false);
+          setIsCreateOpen(true);
+        }}
+      />
+
+      <AiSettingsModal
+        isOpen={isAiSettingsOpen}
+        initial={aiSettings}
+        onClose={() => setIsAiSettingsOpen(false)}
+        onSave={onAiSettingsSave}
+      />
+
+      <JobFormModal
+        title="Add Job"
+        isOpen={isCreateOpen}
+        initial={initialDraft}
+        onClose={() => {
+          setIsCreateOpen(false);
+          setInitialDraft(undefined);
+        }}
+        onSave={onCreate}
+      />
     </main>
   );
 };

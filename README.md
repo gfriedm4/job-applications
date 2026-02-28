@@ -10,6 +10,7 @@ A local-only React + TypeScript app for tracking job applications with localStor
 - Table-first desktop workflow with mobile card layout.
 - Dashboard funnel metrics and in-app reminder counts.
 - JSON export/import with schema versioning and conflict resolver.
+- Optional AI-assisted job draft generation from pasted job descriptions (client-side OpenAI API calls).
 
 ## Setup
 1. Install dependencies:
@@ -36,6 +37,14 @@ The app uses hash routes (`#/...`) and Vite `base: "./"` so static file navigati
   - Keep Existing
   - Keep Incoming
   - Keep Both
+
+## AI-Assisted Drafts (Optional)
+- Open `AI Settings` in the header and save your OpenAI API key.
+- Once a key is saved, `Add Job` becomes a dropdown with:
+  - `Paste Job Description`
+  - `Enter Manually`
+- `Paste Job Description` sends pasted posting text to OpenAI and pre-fills the Add Job form for review before saving.
+- AI settings are stored only in localStorage and are not included in app export/import JSON files.
 
 ## Test Commands
 - Unit + integration tests:
