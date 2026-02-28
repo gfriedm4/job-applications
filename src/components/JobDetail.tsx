@@ -94,10 +94,6 @@ export const JobDetail = ({ job, onPatch, onAddReminder, onToggleReminder, onAdd
             <input value={job.roleTitle} onChange={(event) => onPatch({ roleTitle: event.target.value })} />
           </label>
           <label>
-            Source URL
-            <input value={job.sourceUrl} onChange={(event) => onPatch({ sourceUrl: event.target.value })} />
-          </label>
-          <label>
             Notes
             <textarea rows={6} value={job.notes ?? ""} onChange={(event) => onPatch({ notes: event.target.value })} />
           </label>

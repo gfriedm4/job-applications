@@ -16,7 +16,6 @@ interface SeedReminder {
 interface SeedJobInput {
   company: string;
   roleTitle: string;
-  sourceUrl: string;
   status: JobStatus;
   daysAgo: number;
   location?: string;
@@ -52,7 +51,6 @@ const makeSeedJob = (now: number, input: SeedJobInput): JobRecord => {
     id: createId(),
     company: input.company,
     roleTitle: input.roleTitle,
-    sourceUrl: input.sourceUrl,
     dateAdded: dateOnly(createdAtMs),
     status: input.status,
     location: input.location,
@@ -87,7 +85,6 @@ export const createSeedJobs = (): JobRecord[] => {
     makeSeedJob(now, {
       company: "Northstar AI",
       roleTitle: "Frontend Engineer",
-      sourceUrl: "https://jobs.northstar.ai/frontend-engineer",
       status: "Applied",
       daysAgo: 5,
       location: "Remote (US)",
@@ -114,7 +111,6 @@ export const createSeedJobs = (): JobRecord[] => {
     makeSeedJob(now, {
       company: "Beacon Health",
       roleTitle: "Full Stack Engineer",
-      sourceUrl: "https://careers.beaconhealth.com/full-stack-engineer",
       status: "Interview",
       daysAgo: 16,
       location: "Boston, MA",
@@ -133,7 +129,6 @@ export const createSeedJobs = (): JobRecord[] => {
     makeSeedJob(now, {
       company: "ParcelPath",
       roleTitle: "Senior React Engineer",
-      sourceUrl: "https://jobs.parcelpath.com/senior-react-engineer",
       status: "Offer",
       daysAgo: 24,
       location: "New York, NY",
@@ -152,7 +147,6 @@ export const createSeedJobs = (): JobRecord[] => {
     makeSeedJob(now, {
       company: "Lumina Labs",
       roleTitle: "Product Engineer",
-      sourceUrl: "https://lumina.dev/careers/product-engineer",
       status: "Wishlist",
       daysAgo: 2,
       location: "Remote",
@@ -165,7 +159,6 @@ export const createSeedJobs = (): JobRecord[] => {
     makeSeedJob(now, {
       company: "Orbit Cloud",
       roleTitle: "Platform Engineer",
-      sourceUrl: "https://orbitcloud.com/jobs/platform-engineer",
       status: "Rejected",
       daysAgo: 28,
       location: "Austin, TX",
@@ -183,7 +176,6 @@ export const createSeedJobs = (): JobRecord[] => {
     makeSeedJob(now, {
       company: "Pine & Co",
       roleTitle: "Design Technologist",
-      sourceUrl: "https://pineco.design/careers/design-technologist",
       status: "Archived",
       daysAgo: 45,
       location: "San Francisco, CA",

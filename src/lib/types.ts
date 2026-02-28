@@ -39,7 +39,6 @@ export interface JobRecord {
   id: string;
   company: string;
   roleTitle: string;
-  sourceUrl: string;
   dateAdded: string;
   status: JobStatus;
   location?: string;

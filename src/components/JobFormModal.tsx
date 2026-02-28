@@ -14,13 +14,10 @@ interface Props {
 const emptyDraft = (): JobDraft => ({
   company: "",
   roleTitle: "",
-  sourceUrl: "",
   dateAdded: todayDate(),
   status: "Wishlist",
   tags: []
 });
-
-const urlPattern = /^https?:\/\//i;
 
 const trimOptional = (value?: string): string | undefined => {
   const trimmed = value?.trim();
@@ -43,12 +40,8 @@ export const JobFormModal = ({ isOpen, initial, title, onClose, onSave }: Props)
   }
 
   const validateRequiredStep = (): string | null => {
-    if (!draft.company.trim() || !draft.roleTitle.trim() || !draft.sourceUrl.trim() || !draft.dateAdded || !draft.status) {
-      return "Company, role title, source URL, date added, and status are required.";
-    }
-
-    if (!urlPattern.test(draft.sourceUrl)) {
-      return "Source URL must start with http:// or https://";
+    if (!draft.company.trim() || !draft.roleTitle.trim() || !draft.dateAdded || !draft.status) {
+      return "Company, role title, date added, and status are required.";
     }
 
     return null;
@@ -91,7 +84,6 @@ export const JobFormModal = ({ isOpen, initial, title, onClose, onSave }: Props)
       ...draft,
       company: draft.company.trim(),
       roleTitle: draft.roleTitle.trim(),
-      sourceUrl: draft.sourceUrl.trim(),
       location: trimOptional(draft.location),
       salaryText: trimOptional(draft.salaryText),
       sourceType: trimOptional(draft.sourceType),
@@ -134,16 +126,6 @@ export const JobFormModal = ({ isOpen, initial, title, onClose, onSave }: Props)
             <label>
               Role Title *
               <input value={draft.roleTitle} onChange={(event) => patchDraft({ roleTitle: event.target.value })} required />
-            </label>
-
-            <label>
-              Source URL *
-              <input
-                value={draft.sourceUrl}
-                onChange={(event) => patchDraft({ sourceUrl: event.target.value })}
-                placeholder="https://..."
-                required
-              />
             </label>
 
             <label>

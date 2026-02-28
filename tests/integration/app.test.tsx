@@ -16,7 +16,6 @@ describe("app integration", () => {
     await user.click(screen.getByRole("button", { name: "Add Job" }));
     await user.type(screen.getByLabelText(/Company/i), "Acme Inc");
     await user.type(screen.getByLabelText(/Role Title/i), "Platform Engineer");
-    await user.type(screen.getByLabelText(/Source URL/i), "https://example.com/jobs/1");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Save Job" }));
 

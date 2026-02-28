@@ -15,7 +15,6 @@ const makeState = (): AppState => ({
       id: "1",
       company: "Acme",
       roleTitle: "Frontend",
-      sourceUrl: "https://acme.com",
       dateAdded: "2026-02-10",
       status: "Applied",
       tags: [],

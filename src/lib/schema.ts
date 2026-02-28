@@ -3,15 +3,7 @@ import { JOB_STATUSES, JobRecord, ExportPayload, SCHEMA_VERSION } from "./types"
 const statusSet = new Set<string>(JOB_STATUSES);
 
 const hasRequiredJobFields = (job: Partial<JobRecord>): boolean => {
-  return Boolean(
-    job.id &&
-      job.company &&
-      job.roleTitle &&
-      job.sourceUrl &&
-      job.dateAdded &&
-      job.status &&
-      statusSet.has(job.status)
-  );
+  return Boolean(job.id && job.company && job.roleTitle && job.dateAdded && job.status && statusSet.has(job.status));
 };
 
 export const validateJob = (input: unknown): input is JobRecord => {
@@ -57,12 +49,11 @@ export const migratePayloadToCurrent = (payload: ExportPayload): ExportPayload =
       id: job.id,
       company: job.company,
       roleTitle: job.roleTitle,
-      sourceUrl: job.sourceUrl,
       dateAdded: job.dateAdded,
       status: job.status,
       location: job.location,
       salaryText: job.salaryText,
-      notes: job.notes,
+      notes: typeof job.notes === "string" && job.notes.trim() ? job.notes.trim() : undefined,
       sourceType: job.sourceType,
       tags: Array.isArray(job.tags) ? job.tags : [],
       documents: Array.isArray(job.documents) ? job.documents : [],

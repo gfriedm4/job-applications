@@ -11,7 +11,6 @@ const validPayload: ExportPayload = {
       id: "a",
       company: "Acme",
       roleTitle: "Engineer",
-      sourceUrl: "https://example.com",
       dateAdded: "2026-02-20",
       status: "Applied",
       tags: [],

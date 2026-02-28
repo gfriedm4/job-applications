@@ -9,7 +9,6 @@ import { migratePayloadToCurrent, validateJob } from "../lib/schema";
 export interface JobDraft {
   company: string;
   roleTitle: string;
-  sourceUrl: string;
   dateAdded: string;
   status: JobStatus;
   location?: string;
