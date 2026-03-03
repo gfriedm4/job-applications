@@ -21,6 +21,19 @@
     display: grid;
   }
 
+  .onboarding-shell {
+    padding: 0.85rem;
+  }
+
+  .onboarding-steps li {
+    padding: 0.7rem;
+  }
+
+  .onboarding-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
   .add-job-menu {
     width: 100%;
   }

@@ -3,12 +3,13 @@ import { buildExportFilename } from "../lib/importExport";
 import { ConflictItem } from "../lib/types";
 
 interface Props {
+  canExport: boolean;
   onExport: () => string;
   onReadImport: (file: File) => Promise<{ conflicts: ConflictItem[]; warnings: string[]; inserts: number }>;
   onApplyImport: (resolutions: Record<string, NonNullable<ConflictItem["resolution"]>>) => void;
 }
 
-export const ImportExportPanel = ({ onExport, onReadImport, onApplyImport }: Props) => {
+export const ImportExportPanel = ({ canExport, onExport, onReadImport, onApplyImport }: Props) => {
   const [conflicts, setConflicts] = useState<ConflictItem[]>([]);
   const [warnings, setWarnings] = useState<string[]>([]);
   const [inserts, setInserts] = useState<number>(0);
@@ -64,12 +65,14 @@ export const ImportExportPanel = ({ onExport, onReadImport, onApplyImport }: Pro
 
   return (
     <section className="io-panel">
-      <h2>Import / Export</h2>
+      <h2>{canExport ? "Import / Export" : "Import"}</h2>
       <p className="io-description">Back up your tracker as JSON and merge it on another device with conflict review.</p>
       <div className="io-actions">
-        <button className="primary" onClick={doExport}>
-          Export JSON
-        </button>
+        {canExport && (
+          <button className="primary" onClick={doExport}>
+            Export JSON
+          </button>
+        )}
         <label className="file-input">
           <span>Import JSON</span>
           <input type="file" accept="application/json" onChange={doImport} />

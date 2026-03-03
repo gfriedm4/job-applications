@@ -28,6 +28,12 @@ describe("app integration", () => {
     const user = userEvent.setup();
     render(<App />);
 
+    await user.click(screen.getByRole("button", { name: "Add Job" }));
+    await user.type(screen.getByLabelText(/Company/i), "Acme Inc");
+    await user.type(screen.getByLabelText(/Role Title/i), "Platform Engineer");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Save Job" }));
+
     const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined);
     await user.click(screen.getByRole("button", { name: "Export JSON" }));
     expect(clickSpy).toHaveBeenCalled();

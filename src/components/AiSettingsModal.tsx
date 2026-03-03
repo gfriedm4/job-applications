@@ -6,11 +6,13 @@ interface Props {
   initial: AiSettings;
   onClose: () => void;
   onSave: (settings: AiSettings) => void;
+  onClearDashboardData: () => void;
 }
 
-export const AiSettingsModal = ({ isOpen, initial, onClose, onSave }: Props) => {
+export const AiSettingsModal = ({ isOpen, initial, onClose, onSave, onClearDashboardData }: Props) => {
   const [openAiApiKey, setOpenAiApiKey] = useState(initial.openAiApiKey);
   const [openAiModel, setOpenAiModel] = useState(initial.openAiModel);
+  const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
@@ -19,6 +21,7 @@ export const AiSettingsModal = ({ isOpen, initial, onClose, onSave }: Props) => 
 
     setOpenAiApiKey(initial.openAiApiKey);
     setOpenAiModel(initial.openAiModel);
+    setIsClearConfirmOpen(false);
   }, [isOpen, initial]);
 
   if (!isOpen) {
@@ -32,6 +35,11 @@ export const AiSettingsModal = ({ isOpen, initial, onClose, onSave }: Props) => 
       openAiApiKey: openAiApiKey.trim(),
       openAiModel: openAiModel.trim() || initial.openAiModel
     });
+  };
+
+  const confirmClearDashboardData = () => {
+    onClearDashboardData();
+    setIsClearConfirmOpen(false);
   };
 
   return (
@@ -70,6 +78,28 @@ export const AiSettingsModal = ({ isOpen, initial, onClose, onSave }: Props) => 
             />
           </label>
         </div>
+
+        <section className="settings-danger-zone" aria-labelledby="settings-danger-zone-title">
+          <h3 id="settings-danger-zone-title">Danger Zone</h3>
+          <p className="step-hint">This permanently removes all job records, reminders, timeline notes, and dashboard filters.</p>
+          {isClearConfirmOpen ? (
+            <div className="settings-danger-confirm">
+              <p>Clear all dashboard data now? This action cannot be undone.</p>
+              <div className="modal-actions settings-danger-actions">
+                <button className="secondary" type="button" onClick={() => setIsClearConfirmOpen(false)}>
+                  Cancel
+                </button>
+                <button className="danger" type="button" onClick={confirmClearDashboardData}>
+                  Yes, Clear Data
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button className="danger" type="button" onClick={() => setIsClearConfirmOpen(true)}>
+              Clear Dashboard Data
+            </button>
+          )}
+        </section>
 
         <div className="modal-actions">
           <button className="secondary" type="button" onClick={() => setOpenAiApiKey("")}>

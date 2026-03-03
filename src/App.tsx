@@ -2,12 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { HashRouter, Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { AiSettingsModal } from "./components/AiSettingsModal";
 import { Dashboard } from "./components/Dashboard";
+import { EmptyDashboardWalkthrough } from "./components/EmptyDashboardWalkthrough";
 import { ImportExportPanel } from "./components/ImportExportPanel";
 import { JobDetail } from "./components/JobDetail";
 import { JobFormModal } from "./components/JobFormModal";
 import { JobsTable } from "./components/JobsTable";
 import { PasteJobDescriptionModal } from "./components/PasteJobDescriptionModal";
 import { AiSettings, loadAiSettings, saveAiSettings } from "./lib/aiSettings";
+import { EMPTY_STATE } from "./lib/constants";
 import { JOB_STATUSES, JobStatus } from "./lib/types";
 import { selectFilteredJobs, selectJobById } from "./lib/selectors";
 import { JobDraft, StoreProvider, useStore } from "./state/store";
@@ -77,7 +79,7 @@ const AddJobMenu = ({ onEnterManually, onPasteJobDescription }: AddJobMenuProps)
 };
 
 const HomeView = () => {
-  const { state, dispatch, exportJson, readImportFile, applyImport, storageWarning } = useStore();
+  const { state, dispatch, exportJson, readImportFile, applyImport, storageWarning, clearPendingImport } = useStore();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [initialDraft, setInitialDraft] = useState<JobDraft | undefined>(undefined);
   const [isPasteOpen, setIsPasteOpen] = useState(false);
@@ -86,6 +88,7 @@ const HomeView = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const jobs = useMemo(() => selectFilteredJobs(state), [state]);
+  const isEmpty = state.jobs.length === 0;
   const hasOpenAiKey = Boolean(aiSettings.openAiApiKey.trim());
 
   const toggleSelected = (id: string, selected: boolean) => {
@@ -111,6 +114,13 @@ const HomeView = () => {
   const onAiSettingsSave = (nextSettings: AiSettings) => {
     saveAiSettings(nextSettings);
     setAiSettings(nextSettings);
+    setIsAiSettingsOpen(false);
+  };
+
+  const onClearDashboardData = () => {
+    dispatch({ type: "replaceState", payload: EMPTY_STATE });
+    clearPendingImport();
+    setSelectedIds([]);
     setIsAiSettingsOpen(false);
   };
 
@@ -140,13 +150,8 @@ const HomeView = () => {
           <p className="subtitle">Track applications, interviews, follow-ups, and outcomes in one private local workspace.</p>
         </div>
         <div className="header-actions">
-          {state.jobs.length === 0 && (
-            <button className="secondary" onClick={onLoadSeedData}>
-              Load Sample Data
-            </button>
-          )}
           <button className="secondary" onClick={() => setIsAiSettingsOpen(true)}>
-            AI Settings
+            Settings
           </button>
           {hasOpenAiKey ? (
             <AddJobMenu onEnterManually={openManualCreate} onPasteJobDescription={() => setIsPasteOpen(true)} />
@@ -160,82 +165,94 @@ const HomeView = () => {
 
       {storageWarning && <p className="warning">{storageWarning}</p>}
 
-      <Dashboard jobs={state.jobs.filter((job) => job.status !== "Archived")} />
+      {isEmpty ? (
+        <EmptyDashboardWalkthrough
+          hasOpenAiKey={hasOpenAiKey}
+          onOpenSettings={() => setIsAiSettingsOpen(true)}
+          onAddJob={openManualCreate}
+          onPasteJobDescription={() => setIsPasteOpen(true)}
+          onLoadSampleData={onLoadSeedData}
+        />
+      ) : (
+        <>
+          <Dashboard jobs={state.jobs.filter((job) => job.status !== "Archived")} />
 
-      <section className="filters-bar">
-        <label>
-          Search
-          <input
-            value={state.uiPreferences.searchText}
-            onChange={(event) => dispatch({ type: "setUi", payload: { searchText: event.target.value } })}
-            placeholder="Company, role, note, tag"
+          <section className="filters-bar">
+            <label>
+              Search
+              <input
+                value={state.uiPreferences.searchText}
+                onChange={(event) => dispatch({ type: "setUi", payload: { searchText: event.target.value } })}
+                placeholder="Company, role, note, tag"
+              />
+            </label>
+
+            <label>
+              Status
+              <select
+                value={state.uiPreferences.statusFilter}
+                onChange={(event) =>
+                  dispatch({
+                    type: "setUi",
+                    payload: { statusFilter: event.target.value as JobStatus | "All" }
+                  })
+                }
+              >
+                <option value="All">All</option>
+                {JOB_STATUSES.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              Sort By
+              <select
+                value={state.uiPreferences.sortBy}
+                onChange={(event) =>
+                  dispatch({
+                    type: "setUi",
+                    payload: { sortBy: event.target.value as typeof state.uiPreferences.sortBy }
+                  })
+                }
+              >
+                <option value="updatedAt">Updated</option>
+                <option value="company">Company</option>
+                <option value="dateAdded">Date Added</option>
+                <option value="status">Status</option>
+              </select>
+            </label>
+
+            <label>
+              Direction
+              <select
+                value={state.uiPreferences.sortDirection}
+                onChange={(event) =>
+                  dispatch({
+                    type: "setUi",
+                    payload: { sortDirection: event.target.value as "asc" | "desc" }
+                  })
+                }
+              >
+                <option value="desc">Desc</option>
+                <option value="asc">Asc</option>
+              </select>
+            </label>
+          </section>
+
+          <JobsTable
+            jobs={jobs}
+            selectedIds={selectedIds}
+            onToggleSelected={toggleSelected}
+            onSelectAll={onSelectAll}
+            onBulkStatus={onBulkStatus}
           />
-        </label>
+        </>
+      )}
 
-        <label>
-          Status
-          <select
-            value={state.uiPreferences.statusFilter}
-            onChange={(event) =>
-              dispatch({
-                type: "setUi",
-                payload: { statusFilter: event.target.value as JobStatus | "All" }
-              })
-            }
-          >
-            <option value="All">All</option>
-            {JOB_STATUSES.map((status) => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          Sort By
-          <select
-            value={state.uiPreferences.sortBy}
-            onChange={(event) =>
-              dispatch({
-                type: "setUi",
-                payload: { sortBy: event.target.value as typeof state.uiPreferences.sortBy }
-              })
-            }
-          >
-            <option value="updatedAt">Updated</option>
-            <option value="company">Company</option>
-            <option value="dateAdded">Date Added</option>
-            <option value="status">Status</option>
-          </select>
-        </label>
-
-        <label>
-          Direction
-          <select
-            value={state.uiPreferences.sortDirection}
-            onChange={(event) =>
-              dispatch({
-                type: "setUi",
-                payload: { sortDirection: event.target.value as "asc" | "desc" }
-              })
-            }
-          >
-            <option value="desc">Desc</option>
-            <option value="asc">Asc</option>
-          </select>
-        </label>
-      </section>
-
-      <JobsTable
-        jobs={jobs}
-        selectedIds={selectedIds}
-        onToggleSelected={toggleSelected}
-        onSelectAll={onSelectAll}
-        onBulkStatus={onBulkStatus}
-      />
-
-      <ImportExportPanel onExport={exportJson} onReadImport={readImportFile} onApplyImport={applyImport} />
+      <ImportExportPanel canExport={state.jobs.length > 0} onExport={exportJson} onReadImport={readImportFile} onApplyImport={applyImport} />
 
       <PasteJobDescriptionModal
         isOpen={isPasteOpen}
@@ -259,6 +276,7 @@ const HomeView = () => {
         initial={aiSettings}
         onClose={() => setIsAiSettingsOpen(false)}
         onSave={onAiSettingsSave}
+        onClearDashboardData={onClearDashboardData}
       />
 
       <JobFormModal
