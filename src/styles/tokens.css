@@ -13,5 +13,37 @@
   --accent-warm: #c98635;
   --danger: #b34b3e;
   --shadow: 0 16px 40px rgba(34, 39, 53, 0.1);
+  --bg-glow-left: #e6efff;
+  --bg-glow-right: #d9e7ff;
+  --orb-cool: rgba(31, 95, 190, 0.16);
+  --orb-warm: rgba(202, 127, 45, 0.2);
+  --button-line: #c9ced9;
+  --button-hover-shadow: 0 8px 20px rgba(19, 24, 37, 0.1);
+  --focus-ring: 0 0 0 3px rgba(31, 95, 190, 0.16);
+  --secondary-bg: #f4f6fb;
   --radius: 14px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0c1420;
+  --bg-deep: #101b2a;
+  --paper: #152232;
+  --paper-strong: #1a2a3e;
+  --ink: #e4ecf8;
+  --ink-soft: #a9b8cd;
+  --line: #314863;
+  --accent: #76aaff;
+  --accent-2: #94bcff;
+  --accent-warm: #d8a357;
+  --danger: #e38174;
+  --shadow: 0 20px 48px rgba(2, 7, 15, 0.5);
+  --bg-glow-left: #192940;
+  --bg-glow-right: #22344d;
+  --orb-cool: rgba(94, 146, 228, 0.24);
+  --orb-warm: rgba(216, 160, 91, 0.2);
+  --button-line: #3a526f;
+  --button-hover-shadow: 0 10px 24px rgba(2, 7, 15, 0.42);
+  --focus-ring: 0 0 0 3px rgba(118, 170, 255, 0.35);
+  --secondary-bg: #1f3045;
 }

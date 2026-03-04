@@ -81,7 +81,7 @@ export const PasteJobDescriptionModal = ({
           <p className="warning api-warning">
             Add your OpenAI API key in settings before generating a draft.
             <button type="button" className="link-button" onClick={onOpenSettings}>
-              Open AI Settings
+              Open Settings
             </button>
           </p>
         )}

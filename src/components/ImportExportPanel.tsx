@@ -6,12 +6,14 @@ interface Props {
   onExport: () => string;
   onReadImport: (file: File) => Promise<{ warnings: string[]; jobs: number }>;
   onApplyImport: () => void;
+  headingLevel?: 2 | 3;
 }
 
-export const ImportExportPanel = ({ canExport, onExport, onReadImport, onApplyImport }: Props) => {
+export const ImportExportPanel = ({ canExport, onExport, onReadImport, onApplyImport, headingLevel = 2 }: Props) => {
   const [warnings, setWarnings] = useState<string[]>([]);
   const [pendingJobs, setPendingJobs] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const Heading = headingLevel === 3 ? "h3" : "h2";
 
   const doExport = () => {
     const json = onExport();
@@ -56,11 +58,11 @@ export const ImportExportPanel = ({ canExport, onExport, onReadImport, onApplyIm
 
   return (
     <section className="io-panel">
-      <h2>{canExport ? "Import / Export" : "Import"}</h2>
+      <Heading>{canExport ? "Import / Export" : "Import"}</Heading>
       <p className="io-description">Back up your tracker as JSON and restore it later with a full replace import.</p>
       <div className="io-actions">
         {canExport && (
-          <button className="primary" onClick={doExport}>
+          <button className="primary" type="button" onClick={doExport}>
             Export JSON
           </button>
         )}
@@ -86,7 +88,7 @@ export const ImportExportPanel = ({ canExport, onExport, onReadImport, onApplyIm
             Imported records: <strong>{pendingJobs}</strong>
           </p>
           <p className="preview-stat">Applying this import will replace your current tracker state.</p>
-          <button className="primary" onClick={apply}>
+          <button className="primary" type="button" onClick={apply}>
             Replace All
           </button>
         </div>

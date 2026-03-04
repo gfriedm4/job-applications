@@ -1,0 +1,321 @@
+:root[data-theme="dark"] .app-header,
+:root[data-theme="dark"] .onboarding-shell {
+  border-color: #36506f;
+  background:
+    linear-gradient(110deg, rgba(26, 41, 60, 0.92), rgba(20, 33, 50, 0.94)),
+    repeating-linear-gradient(
+      -25deg,
+      rgba(118, 170, 255, 0.08) 0,
+      rgba(118, 170, 255, 0.08) 14px,
+      rgba(17, 28, 42, 0.08) 14px,
+      rgba(17, 28, 42, 0.08) 28px
+    );
+}
+
+:root[data-theme="dark"] .add-job-menu-panel {
+  border-color: #3a5575;
+  background: linear-gradient(160deg, #233750, #1a2a3d);
+  box-shadow: 0 18px 38px rgba(2, 7, 15, 0.6);
+}
+
+:root[data-theme="dark"] .menu-item {
+  background: #1d2f44;
+}
+
+:root[data-theme="dark"] .menu-item:hover {
+  background: #24405e;
+}
+
+:root[data-theme="dark"] .warning {
+  border-color: #a77a43;
+  background: linear-gradient(120deg, #3e3120, #523f2b);
+  color: #f4d4a8;
+}
+
+:root[data-theme="dark"] .onboarding-header h2,
+:root[data-theme="dark"] .onboarding-header p,
+:root[data-theme="dark"] .dashboard-heading h2,
+:root[data-theme="dark"] .dashboard-heading p,
+:root[data-theme="dark"] .table-count,
+:root[data-theme="dark"] .jobs-table th,
+:root[data-theme="dark"] .mobile-card p,
+:root[data-theme="dark"] .io-description,
+:root[data-theme="dark"] .preview-stat,
+:root[data-theme="dark"] .step-hint,
+:root[data-theme="dark"] .detail-meta,
+:root[data-theme="dark"] .section-subtitle,
+:root[data-theme="dark"] .composer-hint,
+:root[data-theme="dark"] .reminder-created,
+:root[data-theme="dark"] .reminder-meta,
+:root[data-theme="dark"] .reminder-date-group small,
+:root[data-theme="dark"] .timeline-meta,
+:root[data-theme="dark"] .timeline-date-group small,
+:root[data-theme="dark"] .empty-state,
+:root[data-theme="dark"] label {
+  color: var(--ink-soft);
+}
+
+:root[data-theme="dark"] .filters-bar {
+  border-color: #35506e;
+  background: rgba(21, 34, 51, 0.88);
+  box-shadow: 0 12px 28px rgba(2, 7, 15, 0.45);
+}
+
+:root[data-theme="dark"] .card {
+  border-color: #314862;
+  background: linear-gradient(150deg, #1a2b3f, #172739);
+  box-shadow: 0 8px 24px rgba(2, 7, 15, 0.45);
+}
+
+:root[data-theme="dark"] .metric-value {
+  color: var(--ink);
+}
+
+:root[data-theme="dark"] .card-total {
+  background: linear-gradient(150deg, #1a2e45, #17314a);
+}
+
+:root[data-theme="dark"] .card-convert {
+  background: linear-gradient(150deg, #1a2a44, #173559);
+}
+
+:root[data-theme="dark"] .card-duration {
+  background: linear-gradient(150deg, #2a2a3d, #323044);
+}
+
+:root[data-theme="dark"] .card.alert {
+  border-color: #a57c47;
+  background: linear-gradient(160deg, #423421, #55452c);
+}
+
+:root[data-theme="dark"] .table-shell {
+  border-color: #324962;
+}
+
+:root[data-theme="dark"] .table-toolbar {
+  border-bottom-color: #324962;
+  background: linear-gradient(90deg, rgba(29, 44, 65, 0.95), rgba(22, 36, 53, 0.95));
+}
+
+:root[data-theme="dark"] .jobs-table thead {
+  background: #1e3249;
+}
+
+:root[data-theme="dark"] .jobs-table th,
+:root[data-theme="dark"] .jobs-table td {
+  border-bottom-color: #324962;
+}
+
+:root[data-theme="dark"] .jobs-table tbody tr:hover {
+  background: #213952;
+}
+
+:root[data-theme="dark"] .mobile-card {
+  border-color: #35506f;
+  background: linear-gradient(140deg, #1c3048, #19293d);
+}
+
+:root[data-theme="dark"] .chip-wishlist {
+  color: #a9d2ff;
+  background: #1f3b56;
+  border-color: #4e78a6;
+}
+
+:root[data-theme="dark"] .chip-applied,
+:root[data-theme="dark"] .chip-interview,
+:root[data-theme="dark"] .chip-offer {
+  color: #b6d8ff;
+  background: #244161;
+  border-color: #5e85b2;
+}
+
+:root[data-theme="dark"] .chip-rejected {
+  color: #ffd2ca;
+  background: #5a2f30;
+  border-color: #a56463;
+}
+
+:root[data-theme="dark"] .chip-archived {
+  color: #c2ccdb;
+  background: #39495f;
+  border-color: #66748b;
+}
+
+:root[data-theme="dark"] .io-panel {
+  border-color: #35506f;
+  background: linear-gradient(140deg, rgba(26, 42, 61, 0.95), rgba(19, 33, 49, 0.95));
+}
+
+:root[data-theme="dark"] .file-input {
+  border-color: #476484;
+  background: #1b2d41;
+  color: var(--ink);
+}
+
+:root[data-theme="dark"] .import-preview {
+  border-top-color: #486382;
+}
+
+:root[data-theme="dark"] .warning-list {
+  color: #f2c27c;
+}
+
+:root[data-theme="dark"] .modal-backdrop {
+  background: rgba(5, 9, 16, 0.68);
+}
+
+:root[data-theme="dark"] .modal {
+  border-color: #35506f;
+  background: linear-gradient(145deg, #1a2a3e, #172638);
+  box-shadow: 0 24px 56px rgba(2, 7, 15, 0.62);
+}
+
+:root[data-theme="dark"] .form-stepper,
+:root[data-theme="dark"] .settings-appearance {
+  border-color: #3d5878;
+  background: #1f3148;
+}
+
+:root[data-theme="dark"] .step-count,
+:root[data-theme="dark"] .settings-appearance h3,
+:root[data-theme="dark"] .settings-section h3 {
+  color: #c8ddfb;
+}
+
+:root[data-theme="dark"] .step-list li::before {
+  border-color: #5d7694;
+  background: #1a2a3e;
+}
+
+:root[data-theme="dark"] .step-list li.active {
+  color: #d8e8ff;
+}
+
+:root[data-theme="dark"] .step-list li.active::before {
+  border-color: #4f87dc;
+  background: #4f87dc;
+}
+
+:root[data-theme="dark"] .step-list li.complete::before {
+  border-color: #4f87dc;
+  background: #2f4b70;
+}
+
+:root[data-theme="dark"] .settings-danger-zone {
+  border-color: #8f5651;
+  background: #402627;
+}
+
+:root[data-theme="dark"] .settings-danger-zone h3 {
+  color: #ffb8ad;
+}
+
+:root[data-theme="dark"] .settings-danger-confirm p {
+  color: #f0c0b9;
+}
+
+:root[data-theme="dark"] .detail-header,
+:root[data-theme="dark"] .detail-card {
+  border-color: #36506f;
+  background: linear-gradient(140deg, #1b2e45, #18283a);
+  box-shadow: 0 12px 30px rgba(2, 7, 15, 0.45);
+}
+
+:root[data-theme="dark"] .detail-list li {
+  border-color: #3b5676;
+  background: #1f3147;
+}
+
+:root[data-theme="dark"] .detail-list li:hover {
+  box-shadow: 0 12px 24px rgba(2, 7, 15, 0.42);
+}
+
+:root[data-theme="dark"] .section-heading {
+  border-bottom-color: rgba(96, 128, 164, 0.65);
+}
+
+:root[data-theme="dark"] .section-count,
+:root[data-theme="dark"] .stat-chip {
+  border-color: #4d6786;
+  background: #243a54;
+  color: #d5e3f8;
+}
+
+:root[data-theme="dark"] .stat-chip--overdue {
+  border-color: #9a6a64;
+  background: #4f3132;
+  color: #ffd2ca;
+}
+
+:root[data-theme="dark"] .empty-state {
+  border-color: #4d6786;
+  background: linear-gradient(160deg, #1b2f45, #1a2c3f);
+}
+
+:root[data-theme="dark"] .section-composer {
+  border-color: rgba(92, 126, 164, 0.8);
+  background:
+    linear-gradient(160deg, rgba(29, 47, 69, 0.96), rgba(22, 37, 54, 0.95)),
+    repeating-linear-gradient(
+      -28deg,
+      rgba(118, 170, 255, 0.08) 0,
+      rgba(118, 170, 255, 0.08) 10px,
+      rgba(20, 33, 49, 0.08) 10px,
+      rgba(20, 33, 49, 0.08) 20px
+    );
+}
+
+:root[data-theme="dark"] .detail-card--reminders {
+  background:
+    linear-gradient(160deg, rgba(28, 46, 68, 0.95), rgba(24, 39, 58, 0.97)),
+    radial-gradient(circle at 10% 0%, rgba(118, 170, 255, 0.17), transparent 48%);
+}
+
+:root[data-theme="dark"] .detail-card--timeline {
+  background:
+    linear-gradient(160deg, rgba(30, 43, 62, 0.96), rgba(31, 36, 50, 0.95)),
+    radial-gradient(circle at 90% 100%, rgba(216, 163, 87, 0.18), transparent 50%);
+}
+
+:root[data-theme="dark"] .reminder-item {
+  background: linear-gradient(90deg, rgba(95, 131, 183, 0.22) 0%, rgba(53, 78, 114, 0.2) 30%, #21354d 72%);
+}
+
+:root[data-theme="dark"] .reminder-item--overdue {
+  border-color: #9d6962;
+  background: linear-gradient(90deg, rgba(179, 109, 98, 0.25) 0%, rgba(100, 57, 57, 0.2) 30%, #3a2a32 72%);
+}
+
+:root[data-theme="dark"] .reminder-item--completed {
+  border-color: #5d7da4;
+  background: linear-gradient(90deg, rgba(93, 133, 187, 0.26) 0%, rgba(58, 88, 127, 0.22) 30%, #203349 72%);
+}
+
+:root[data-theme="dark"] .meta-pill {
+  border-color: #5b779b;
+}
+
+:root[data-theme="dark"] .meta-pill--upcoming,
+:root[data-theme="dark"] .meta-pill--completed {
+  color: #c2dcff;
+  border-color: #5d7ea8;
+  background: #274261;
+}
+
+:root[data-theme="dark"] .meta-pill--overdue {
+  color: #ffd2ca;
+  border-color: #9d6660;
+  background: #583637;
+}
+
+:root[data-theme="dark"] .event-chip {
+  border-color: #5b7698;
+  background: #263f5d;
+  color: #d2e3fb;
+}
+
+:root[data-theme="dark"] .event-chip--statusChanged {
+  border-color: #96764c;
+  background: #4f4028;
+  color: #f3d19b;
+}

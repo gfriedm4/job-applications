@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { HashRouter, Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
-import { AiSettingsModal } from "./components/AiSettingsModal";
 import { Dashboard } from "./components/Dashboard";
 import { EmptyDashboardWalkthrough } from "./components/EmptyDashboardWalkthrough";
-import { ImportExportPanel } from "./components/ImportExportPanel";
 import { JobDetail } from "./components/JobDetail";
 import { JobFormModal } from "./components/JobFormModal";
 import { JobsTable } from "./components/JobsTable";
 import { PasteJobDescriptionModal } from "./components/PasteJobDescriptionModal";
+import { SettingsModal } from "./components/SettingsModal";
 import { AiSettings, loadAiSettings, saveAiSettings } from "./lib/aiSettings";
 import { EMPTY_STATE } from "./lib/constants";
 import { JOB_STATUSES, JobStatus } from "./lib/types";
@@ -18,6 +17,10 @@ interface AddJobMenuProps {
   onEnterManually: () => void;
   onPasteJobDescription: () => void;
 }
+
+const applyTheme = (darkMode: boolean) => {
+  document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
+};
 
 const AddJobMenu = ({ onEnterManually, onPasteJobDescription }: AddJobMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -83,12 +86,16 @@ const HomeView = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [initialDraft, setInitialDraft] = useState<JobDraft | undefined>(undefined);
   const [isPasteOpen, setIsPasteOpen] = useState(false);
-  const [isAiSettingsOpen, setIsAiSettingsOpen] = useState(false);
-  const [aiSettings, setAiSettings] = useState<AiSettings>(() => loadAiSettings());
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [settings, setSettings] = useState<AiSettings>(() => loadAiSettings());
 
   const jobs = useMemo(() => selectFilteredJobs(state), [state]);
   const isEmpty = state.jobs.length === 0;
-  const hasOpenAiKey = Boolean(aiSettings.openAiApiKey.trim());
+  const hasOpenAiKey = Boolean(settings.openAiApiKey.trim());
+
+  useEffect(() => {
+    applyTheme(settings.darkMode);
+  }, [settings.darkMode]);
 
   const onCreate = (draft: JobDraft) => {
     dispatch({ type: "createJob", payload: draft });
@@ -101,16 +108,16 @@ const HomeView = () => {
     setIsCreateOpen(true);
   };
 
-  const onAiSettingsSave = (nextSettings: AiSettings) => {
+  const onSettingsSave = (nextSettings: AiSettings) => {
     saveAiSettings(nextSettings);
-    setAiSettings(nextSettings);
-    setIsAiSettingsOpen(false);
+    setSettings(nextSettings);
+    setIsSettingsOpen(false);
   };
 
   const onClearDashboardData = () => {
     dispatch({ type: "replaceState", payload: EMPTY_STATE });
     clearPendingImport();
-    setIsAiSettingsOpen(false);
+    setIsSettingsOpen(false);
   };
 
   return (
@@ -122,7 +129,7 @@ const HomeView = () => {
           <p className="subtitle">Track applications, interviews, follow-ups, and outcomes in one private local workspace.</p>
         </div>
         <div className="header-actions">
-          <button className="secondary" onClick={() => setIsAiSettingsOpen(true)}>
+          <button className="secondary" onClick={() => setIsSettingsOpen(true)}>
             Settings
           </button>
           {hasOpenAiKey ? (
@@ -140,7 +147,7 @@ const HomeView = () => {
       {isEmpty ? (
         <EmptyDashboardWalkthrough
           hasOpenAiKey={hasOpenAiKey}
-          onOpenSettings={() => setIsAiSettingsOpen(true)}
+          onOpenSettings={() => setIsSettingsOpen(true)}
           onAddJob={openManualCreate}
           onPasteJobDescription={() => setIsPasteOpen(true)}
         />
@@ -217,14 +224,12 @@ const HomeView = () => {
         </>
       )}
 
-      <ImportExportPanel canExport={state.jobs.length > 0} onExport={exportJson} onReadImport={readImportFile} onApplyImport={applyImport} />
-
       <PasteJobDescriptionModal
         isOpen={isPasteOpen}
-        apiKey={aiSettings.openAiApiKey}
-        model={aiSettings.openAiModel}
+        apiKey={settings.openAiApiKey}
+        model={settings.openAiModel}
         onClose={() => setIsPasteOpen(false)}
-        onOpenSettings={() => setIsAiSettingsOpen(true)}
+        onOpenSettings={() => setIsSettingsOpen(true)}
         onEnterManually={() => {
           setIsPasteOpen(false);
           openManualCreate();
@@ -236,11 +241,15 @@ const HomeView = () => {
         }}
       />
 
-      <AiSettingsModal
-        isOpen={isAiSettingsOpen}
-        initial={aiSettings}
-        onClose={() => setIsAiSettingsOpen(false)}
-        onSave={onAiSettingsSave}
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        initial={settings}
+        onClose={() => setIsSettingsOpen(false)}
+        onSave={onSettingsSave}
+        canExport={state.jobs.length > 0}
+        onExport={exportJson}
+        onReadImport={readImportFile}
+        onApplyImport={applyImport}
         onClearDashboardData={onClearDashboardData}
       />
 
@@ -287,6 +296,10 @@ const DetailView = () => {
 };
 
 export default function App() {
+  useEffect(() => {
+    applyTheme(loadAiSettings().darkMode);
+  }, []);
+
   return (
     <StoreProvider>
       <HashRouter>
