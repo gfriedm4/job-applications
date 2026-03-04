@@ -99,21 +99,21 @@
 }
 
 .chip-applied {
-  color: #145f7f;
-  background: #dcf4ff;
-  border-color: #a7dcf2;
+  color: #1f4f95;
+  background: #e3efff;
+  border-color: #bfd4f6;
 }
 
 .chip-interview {
-  color: #1f6d4d;
-  background: #dff9ea;
-  border-color: #aee0c4;
+  color: #1c4b91;
+  background: #e5efff;
+  border-color: #c3d4f8;
 }
 
 .chip-offer {
-  color: #2d7035;
-  background: #ddf8dc;
-  border-color: #a9d8a5;
+  color: #244784;
+  background: #e9f1ff;
+  border-color: #c8d8f9;
 }
 
 .chip-rejected {

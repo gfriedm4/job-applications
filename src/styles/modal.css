@@ -69,18 +69,18 @@
 }
 
 .step-list li.active {
-  color: #144f56;
+  color: #1f4d96;
   font-weight: 700;
 }
 
 .step-list li.active::before {
-  border-color: #1f7078;
-  background: #1f7078;
+  border-color: #2f73e5;
+  background: #2f73e5;
 }
 
 .step-list li.complete::before {
-  border-color: #1f7078;
-  background: #d5ebee;
+  border-color: #2f73e5;
+  background: #dce8ff;
 }
 
 .step-hint {

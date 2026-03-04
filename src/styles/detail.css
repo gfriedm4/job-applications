@@ -164,8 +164,8 @@
     linear-gradient(160deg, rgba(255, 255, 255, 0.98), rgba(246, 250, 255, 0.94)),
     repeating-linear-gradient(
       -28deg,
-      rgba(23, 101, 109, 0.045) 0,
-      rgba(23, 101, 109, 0.045) 10px,
+      rgba(31, 95, 190, 0.045) 0,
+      rgba(31, 95, 190, 0.045) 10px,
       rgba(255, 255, 255, 0.045) 10px,
       rgba(255, 255, 255, 0.045) 20px
     );
@@ -173,8 +173,8 @@
 
 .detail-card--reminders {
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(246, 252, 250, 0.96)),
-    radial-gradient(circle at 10% 0%, rgba(63, 127, 61, 0.1), transparent 48%);
+    linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(246, 250, 255, 0.97)),
+    radial-gradient(circle at 10% 0%, rgba(77, 130, 216, 0.11), transparent 48%);
 }
 
 .detail-card--timeline {
@@ -276,9 +276,9 @@
 }
 
 .meta-pill--completed {
-  color: #2f6344;
-  border-color: #b9dfc5;
-  background: #edf9f1;
+  color: #2f568f;
+  border-color: #bad0f4;
+  background: #edf4ff;
 }
 
 .reminder-item--overdue {
@@ -291,12 +291,12 @@
 }
 
 .reminder-item--completed {
-  border-color: #bfddc8;
-  background: linear-gradient(90deg, rgba(127, 184, 151, 0.14) 0%, rgba(127, 184, 151, 0.05) 30%, #fbfffc 72%);
+  border-color: #bfd0ee;
+  background: linear-gradient(90deg, rgba(129, 164, 224, 0.15) 0%, rgba(129, 164, 224, 0.06) 30%, #fbfcff 72%);
 }
 
 .reminder-item--completed::before {
-  background: linear-gradient(180deg, #8ec3a1, #6ea987);
+  background: linear-gradient(180deg, #90b4ea, #6f97d6);
 }
 
 .timeline-list {
@@ -379,12 +379,12 @@
 }
 
 .timeline-item--noteAdded {
-  border-left-color: #98ceae;
+  border-left-color: #9cb8ee;
 }
 
 .timeline-item--noteAdded::before {
-  background: #88bf9d;
-  box-shadow: 0 0 0 3px rgba(136, 191, 157, 0.22);
+  background: #7fa4e8;
+  box-shadow: 0 0 0 3px rgba(127, 164, 232, 0.22);
 }
 
 .timeline-item--updated {
@@ -409,9 +409,9 @@
 }
 
 .event-chip--noteAdded {
-  border-color: #c5e3d2;
-  background: #eef9f2;
-  color: #2f6543;
+  border-color: #c5d7f3;
+  background: #eff5ff;
+  color: #2f568f;
 }
 
 .event-chip--updated {

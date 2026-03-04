@@ -7,8 +7,8 @@ body {
   font-family: "Sora", "Avenir Next", "Segoe UI", sans-serif;
   color: var(--ink);
   background:
-    radial-gradient(1200px 560px at 10% -12%, #fcefd9 0%, transparent 62%),
-    radial-gradient(960px 520px at 95% 0%, #dcebee 0%, transparent 56%),
+    radial-gradient(1200px 560px at 10% -12%, #e6efff 0%, transparent 62%),
+    radial-gradient(960px 520px at 95% 0%, #d9e7ff 0%, transparent 56%),
     linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
   min-height: 100vh;
 }
@@ -27,7 +27,7 @@ body::before {
   width: 360px;
   height: 360px;
   border-radius: 50%;
-  background: radial-gradient(circle at 28% 28%, rgba(23, 101, 109, 0.16), rgba(23, 101, 109, 0));
+  background: radial-gradient(circle at 28% 28%, rgba(31, 95, 190, 0.16), rgba(31, 95, 190, 0));
 }
 
 body::after {
@@ -104,17 +104,17 @@ select:focus-visible,
 a:focus-visible {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(23, 101, 109, 0.16);
+  box-shadow: 0 0 0 3px rgba(31, 95, 190, 0.16);
 }
 
 .primary {
   color: #fff;
   border-color: transparent;
-  background: linear-gradient(140deg, #1f7078, #15555c);
+  background: linear-gradient(140deg, #2f73e5, #1f56b8);
 }
 
 .primary:hover {
-  background: linear-gradient(140deg, #24818b, #17656d);
+  background: linear-gradient(140deg, #3a82f3, #275fca);
 }
 
 .secondary {
