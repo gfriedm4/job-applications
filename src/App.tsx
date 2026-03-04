@@ -1,14 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import { HashRouter, Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { Dashboard } from "./components/Dashboard";
 import { EmptyDashboardWalkthrough } from "./components/EmptyDashboardWalkthrough";
-import { JobDetail } from "./components/JobDetail";
 import { JobFormModal } from "./components/JobFormModal";
 import { JobsTable } from "./components/JobsTable";
-import { PasteJobDescriptionModal } from "./components/PasteJobDescriptionModal";
-import { SettingsModal } from "./components/SettingsModal";
 import { AiSettings, loadAiSettings, saveAiSettings } from "./lib/aiSettings";
 import { EMPTY_STATE } from "./lib/constants";
+import { buildExportFilename } from "./lib/importExport";
 import { JOB_STATUSES, JobStatus } from "./lib/types";
 import { selectFilteredJobs, selectJobById } from "./lib/selectors";
 import { JobDraft, StoreProvider, useStore } from "./state/store";
@@ -21,6 +19,12 @@ interface AddJobMenuProps {
 const applyTheme = (darkMode: boolean) => {
   document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
 };
+
+const JobDetail = lazy(() => import("./components/JobDetail").then((module) => ({ default: module.JobDetail })));
+const PasteJobDescriptionModal = lazy(() =>
+  import("./components/PasteJobDescriptionModal").then((module) => ({ default: module.PasteJobDescriptionModal }))
+);
+const SettingsModal = lazy(() => import("./components/SettingsModal").then((module) => ({ default: module.SettingsModal })));
 
 const AddJobMenu = ({ onEnterManually, onPasteJobDescription }: AddJobMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -114,6 +118,21 @@ const HomeView = () => {
     setIsSettingsOpen(false);
   };
 
+  const exportJobs = () => {
+    const json = exportJson();
+    const anchor = document.createElement("a");
+    const blob = new Blob([json], { type: "application/json" });
+    const canUseBlobUrl = typeof URL.createObjectURL === "function";
+    const url = canUseBlobUrl ? URL.createObjectURL(blob) : `data:application/json;charset=utf-8,${encodeURIComponent(json)}`;
+
+    anchor.href = url;
+    anchor.download = buildExportFilename();
+    anchor.click();
+    if (canUseBlobUrl && typeof URL.revokeObjectURL === "function") {
+      URL.revokeObjectURL(url);
+    }
+  };
+
   const onClearDashboardData = () => {
     dispatch({ type: "replaceState", payload: EMPTY_STATE });
     clearPendingImport();
@@ -132,6 +151,11 @@ const HomeView = () => {
           <button className="secondary" onClick={() => setIsSettingsOpen(true)}>
             Settings
           </button>
+          {state.jobs.length > 0 && (
+            <button className="secondary" onClick={exportJobs}>
+              Export JSON
+            </button>
+          )}
           {hasOpenAiKey ? (
             <AddJobMenu onEnterManually={openManualCreate} onPasteJobDescription={() => setIsPasteOpen(true)} />
           ) : (
@@ -224,45 +248,55 @@ const HomeView = () => {
         </>
       )}
 
-      <PasteJobDescriptionModal
-        isOpen={isPasteOpen}
-        apiKey={settings.openAiApiKey}
-        model={settings.openAiModel}
-        onClose={() => setIsPasteOpen(false)}
-        onOpenSettings={() => setIsSettingsOpen(true)}
-        onEnterManually={() => {
-          setIsPasteOpen(false);
-          openManualCreate();
-        }}
-        onDraftReady={(draft) => {
-          setInitialDraft(draft);
-          setIsPasteOpen(false);
-          setIsCreateOpen(true);
-        }}
-      />
+      {isPasteOpen && (
+        <Suspense fallback={null}>
+          <PasteJobDescriptionModal
+            isOpen={isPasteOpen}
+            apiKey={settings.openAiApiKey}
+            model={settings.openAiModel}
+            onClose={() => setIsPasteOpen(false)}
+            onOpenSettings={() => setIsSettingsOpen(true)}
+            onEnterManually={() => {
+              setIsPasteOpen(false);
+              openManualCreate();
+            }}
+            onDraftReady={(draft) => {
+              setInitialDraft(draft);
+              setIsPasteOpen(false);
+              setIsCreateOpen(true);
+            }}
+          />
+        </Suspense>
+      )}
 
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        initial={settings}
-        onClose={() => setIsSettingsOpen(false)}
-        onSave={onSettingsSave}
-        canExport={state.jobs.length > 0}
-        onExport={exportJson}
-        onReadImport={readImportFile}
-        onApplyImport={applyImport}
-        onClearDashboardData={onClearDashboardData}
-      />
+      {isSettingsOpen && (
+        <Suspense fallback={null}>
+          <SettingsModal
+            isOpen={isSettingsOpen}
+            initial={settings}
+            onClose={() => setIsSettingsOpen(false)}
+            onSave={onSettingsSave}
+            canExport={state.jobs.length > 0}
+            onExport={exportJson}
+            onReadImport={readImportFile}
+            onApplyImport={applyImport}
+            onClearDashboardData={onClearDashboardData}
+          />
+        </Suspense>
+      )}
 
-      <JobFormModal
-        title="Add Job"
-        isOpen={isCreateOpen}
-        initial={initialDraft}
-        onClose={() => {
-          setIsCreateOpen(false);
-          setInitialDraft(undefined);
-        }}
-        onSave={onCreate}
-      />
+      {isCreateOpen && (
+        <JobFormModal
+          title="Add Job"
+          isOpen={isCreateOpen}
+          initial={initialDraft}
+          onClose={() => {
+            setIsCreateOpen(false);
+            setInitialDraft(undefined);
+          }}
+          onSave={onCreate}
+        />
+      )}
     </main>
   );
 };
@@ -279,15 +313,19 @@ const DetailView = () => {
 
   return (
     <main className="app-shell detail-shell">
-      <JobDetail
-        job={job}
-        onPatch={(changes) => dispatch({ type: "updateJob", payload: { id: job.id, changes } })}
-        onAddReminder={(dueDate, text) => dispatch({ type: "addReminder", payload: { id: job.id, reminder: { dueDate, text, completed: false } } })}
-        onToggleReminder={(reminderId, completed) =>
-          dispatch({ type: "toggleReminder", payload: { jobId: job.id, reminderId, completed } })
-        }
-        onAddTimelineNote={(message) => dispatch({ type: "addTimelineNote", payload: { id: job.id, message } })}
-      />
+      <Suspense fallback={null}>
+        <JobDetail
+          job={job}
+          onPatch={(changes) => dispatch({ type: "updateJob", payload: { id: job.id, changes } })}
+          onAddReminder={(dueDate, text) =>
+            dispatch({ type: "addReminder", payload: { id: job.id, reminder: { dueDate, text, completed: false } } })
+          }
+          onToggleReminder={(reminderId, completed) =>
+            dispatch({ type: "toggleReminder", payload: { jobId: job.id, reminderId, completed } })
+          }
+          onAddTimelineNote={(message) => dispatch({ type: "addTimelineNote", payload: { id: job.id, message } })}
+        />
+      </Suspense>
       <button className="floating-back" onClick={() => navigate("/")}>
         Back
       </button>
