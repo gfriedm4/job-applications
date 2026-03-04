@@ -58,4 +58,5 @@ jobs:
           # ⚠️ Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
         # ⚠️ Optionally configure the archive location with env vars
-        env: CHROMATIC_ARCHIVE_LOCATION=./test-results
+        env:
+          CHROMATIC_ARCHIVE_LOCATION: ./test-results
