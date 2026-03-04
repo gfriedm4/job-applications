@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "@chromatic-com/playwright";
 
 test("create and inspect a job", async ({ page }) => {
   await page.goto("/#/");
