@@ -1,9 +1,6 @@
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import { HashRouter, Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
-import { Dashboard } from "./components/Dashboard";
-import { EmptyDashboardWalkthrough } from "./components/EmptyDashboardWalkthrough";
 import { JobFormModal } from "./components/JobFormModal";
-import { JobsTable } from "./components/JobsTable";
 import { AiSettings, loadAiSettings, saveAiSettings } from "./lib/aiSettings";
 import { EMPTY_STATE } from "./lib/constants";
 import { buildExportFilename } from "./lib/importExport";
@@ -20,6 +17,11 @@ const applyTheme = (darkMode: boolean) => {
   document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
 };
 
+const Dashboard = lazy(() => import("./components/Dashboard").then((module) => ({ default: module.Dashboard })));
+const EmptyDashboardWalkthrough = lazy(() =>
+  import("./components/EmptyDashboardWalkthrough").then((module) => ({ default: module.EmptyDashboardWalkthrough }))
+);
+const JobsTable = lazy(() => import("./components/JobsTable").then((module) => ({ default: module.JobsTable })));
 const JobDetail = lazy(() => import("./components/JobDetail").then((module) => ({ default: module.JobDetail })));
 const PasteJobDescriptionModal = lazy(() =>
   import("./components/PasteJobDescriptionModal").then((module) => ({ default: module.PasteJobDescriptionModal }))
@@ -169,15 +171,19 @@ const HomeView = () => {
       {storageWarning && <p className="warning">{storageWarning}</p>}
 
       {isEmpty ? (
-        <EmptyDashboardWalkthrough
-          hasOpenAiKey={hasOpenAiKey}
-          onOpenSettings={() => setIsSettingsOpen(true)}
-          onAddJob={openManualCreate}
-          onPasteJobDescription={() => setIsPasteOpen(true)}
-        />
+        <Suspense fallback={null}>
+          <EmptyDashboardWalkthrough
+            hasOpenAiKey={hasOpenAiKey}
+            onOpenSettings={() => setIsSettingsOpen(true)}
+            onAddJob={openManualCreate}
+            onPasteJobDescription={() => setIsPasteOpen(true)}
+          />
+        </Suspense>
       ) : (
         <>
-          <Dashboard jobs={state.jobs.filter((job) => job.status !== "Archived")} />
+          <Suspense fallback={null}>
+            <Dashboard jobs={state.jobs.filter((job) => job.status !== "Archived")} />
+          </Suspense>
 
           <section className="filters-bar">
             <label>
@@ -244,7 +250,9 @@ const HomeView = () => {
             </label>
           </section>
 
-          <JobsTable jobs={jobs} />
+          <Suspense fallback={null}>
+            <JobsTable jobs={jobs} />
+          </Suspense>
         </>
       )}
 
