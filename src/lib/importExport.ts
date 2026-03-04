@@ -1,13 +1,6 @@
 import { EMPTY_STATE } from "./constants";
-import {
-  AppState,
-  ConflictItem,
-  ExportPayload,
-  ImportPreviewResult,
-  JobRecord,
-  SCHEMA_VERSION
-} from "./types";
-import { createId, nowIso } from "./utils";
+import { AppState, ExportPayload, JobRecord, SCHEMA_VERSION } from "./types";
+import { nowIso } from "./utils";
 import { migratePayloadToCurrent, validateExportPayload } from "./schema";
 
 const APP_META = {
@@ -47,85 +40,36 @@ export const parseImportText = (text: string): ExportPayload => {
   return migratePayloadToCurrent(raw);
 };
 
-export const detectImportConflicts = (
-  currentJobs: JobRecord[],
-  incomingJobs: JobRecord[]
-): ImportPreviewResult => {
-  const byId = new Map(currentJobs.map((job) => [job.id, job]));
+const dedupeJobsById = (jobs: JobRecord[]): { jobs: JobRecord[]; warnings: string[] } => {
   const seenIncomingIds = new Set<string>();
-  const conflicts: ConflictItem[] = [];
-  const toInsert: JobRecord[] = [];
+  const deduped: JobRecord[] = [];
   const warnings: string[] = [];
 
-  for (const incoming of incomingJobs) {
+  for (const incoming of jobs) {
     if (seenIncomingIds.has(incoming.id)) {
       warnings.push(`Duplicate incoming ID ignored: ${incoming.id}`);
       continue;
     }
     seenIncomingIds.add(incoming.id);
-
-    const existing = byId.get(incoming.id);
-    if (!existing) {
-      toInsert.push(incoming);
-      continue;
-    }
-
-    conflicts.push({ existing, incoming, resolution: undefined });
+    deduped.push(incoming);
   }
 
-  return { toInsert, conflicts, warnings };
+  return { jobs: deduped, warnings };
 };
 
-export const applyConflictResolutions = (
-  currentState: AppState,
-  preview: ImportPreviewResult,
-  resolutions: Record<string, NonNullable<ConflictItem["resolution"]>>
-): AppState => {
-  const jobsById = new Map(currentState.jobs.map((job) => [job.id, job]));
-
-  for (const incoming of preview.toInsert) {
-    jobsById.set(incoming.id, incoming);
-  }
-
-  for (const conflict of preview.conflicts) {
-    const incoming = conflict.incoming;
-    const resolution = resolutions[incoming.id] ?? "keepExisting";
-
-    if (resolution === "keepExisting") {
-      continue;
-    }
-
-    if (resolution === "keepIncoming") {
-      jobsById.set(incoming.id, incoming);
-      continue;
-    }
-
-    if (resolution === "keepBoth") {
-      jobsById.set(incoming.id, incoming);
-      const duplicated: JobRecord = {
-        ...incoming,
-        id: createId(),
-        createdAt: nowIso(),
-        updatedAt: nowIso()
-      };
-      jobsById.set(duplicated.id, duplicated);
-    }
-  }
+export const readReplaceAllImport = (text: string): { payload: ExportPayload; nextState: AppState; warnings: string[] } => {
+  const payload = parseImportText(text);
+  const deduped = dedupeJobsById(payload.jobs);
 
   return {
-    ...currentState,
-    schemaVersion: SCHEMA_VERSION,
-    jobs: Array.from(jobsById.values())
+    payload,
+    warnings: deduped.warnings,
+    nextState: {
+      schemaVersion: SCHEMA_VERSION,
+      jobs: deduped.jobs,
+      uiPreferences: payload.uiPreferences
+    }
   };
-};
-
-export const readImportPreview = (
-  currentState: AppState,
-  text: string
-): { payload: ExportPayload; preview: ImportPreviewResult } => {
-  const payload = parseImportText(text);
-  const preview = detectImportConflicts(currentState.jobs, payload.jobs);
-  return { payload, preview };
 };
 
 export const makeEmptyState = (): AppState => EMPTY_STATE;

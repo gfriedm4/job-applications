@@ -13,13 +13,6 @@ export type JobStatus = (typeof JOB_STATUSES)[number];
 
 export type TimelineEventType = "created" | "statusChanged" | "noteAdded" | "updated";
 
-export interface DocumentMeta {
-  id: string;
-  label: string;
-  pathOrUrl: string;
-  note?: string;
-}
-
 export interface Reminder {
   id: string;
   dueDate: string;
@@ -46,7 +39,6 @@ export interface JobRecord {
   notes?: string;
   tags: string[];
   sourceType?: string;
-  documents: DocumentMeta[];
   reminders: Reminder[];
   timelineEvents: TimelineEvent[];
   createdAt: string;
@@ -75,16 +67,4 @@ export interface ExportPayload {
   };
   jobs: JobRecord[];
   uiPreferences: UIPreferences;
-}
-
-export interface ConflictItem {
-  existing: JobRecord;
-  incoming: JobRecord;
-  resolution?: "keepExisting" | "keepIncoming" | "keepBoth";
-}
-
-export interface ImportPreviewResult {
-  toInsert: JobRecord[];
-  conflicts: ConflictItem[];
-  warnings: string[];
 }

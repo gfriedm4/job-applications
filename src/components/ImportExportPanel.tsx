@@ -1,19 +1,16 @@
 import { ChangeEvent, useState } from "react";
 import { buildExportFilename } from "../lib/importExport";
-import { ConflictItem } from "../lib/types";
 
 interface Props {
   canExport: boolean;
   onExport: () => string;
-  onReadImport: (file: File) => Promise<{ conflicts: ConflictItem[]; warnings: string[]; inserts: number }>;
-  onApplyImport: (resolutions: Record<string, NonNullable<ConflictItem["resolution"]>>) => void;
+  onReadImport: (file: File) => Promise<{ warnings: string[]; jobs: number }>;
+  onApplyImport: () => void;
 }
 
 export const ImportExportPanel = ({ canExport, onExport, onReadImport, onApplyImport }: Props) => {
-  const [conflicts, setConflicts] = useState<ConflictItem[]>([]);
   const [warnings, setWarnings] = useState<string[]>([]);
-  const [inserts, setInserts] = useState<number>(0);
-  const [resolutions, setResolutions] = useState<Record<string, NonNullable<ConflictItem["resolution"]>>>({});
+  const [pendingJobs, setPendingJobs] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const doExport = () => {
@@ -41,32 +38,26 @@ export const ImportExportPanel = ({ canExport, onExport, onReadImport, onApplyIm
 
     try {
       const preview = await onReadImport(file);
-      setConflicts(preview.conflicts);
       setWarnings(preview.warnings);
-      setInserts(preview.inserts);
-      setResolutions({});
+      setPendingJobs(preview.jobs);
       setError(null);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Import failed.");
-      setConflicts([]);
       setWarnings([]);
-      setInserts(0);
-      setResolutions({});
+      setPendingJobs(null);
     }
   };
 
   const apply = () => {
-    onApplyImport(resolutions);
-    setConflicts([]);
+    onApplyImport();
     setWarnings([]);
-    setInserts(0);
-    setResolutions({});
+    setPendingJobs(null);
   };
 
   return (
     <section className="io-panel">
       <h2>{canExport ? "Import / Export" : "Import"}</h2>
-      <p className="io-description">Back up your tracker as JSON and merge it on another device with conflict review.</p>
+      <p className="io-description">Back up your tracker as JSON and restore it later with a full replace import.</p>
       <div className="io-actions">
         {canExport && (
           <button className="primary" onClick={doExport}>
@@ -88,59 +79,15 @@ export const ImportExportPanel = ({ canExport, onExport, onReadImport, onApplyIm
         </ul>
       )}
 
-      {(inserts > 0 || conflicts.length > 0) && (
+      {pendingJobs !== null && (
         <div className="import-preview">
-          <h3>Import Preview</h3>
+          <h3>Replace All Data</h3>
           <p className="preview-stat">
-            New records: <strong>{inserts}</strong>
+            Imported records: <strong>{pendingJobs}</strong>
           </p>
-          <p className="preview-stat">
-            Conflicts: <strong>{conflicts.length}</strong>
-          </p>
-
-          {conflicts.map((conflict) => (
-            <div className="conflict-item" key={conflict.incoming.id}>
-              <p>
-                <strong>{conflict.existing.company}</strong> - {conflict.existing.roleTitle}
-              </p>
-              <div className="segmented-control">
-                <label>
-                  <input
-                    type="radio"
-                    name={conflict.incoming.id}
-                    checked={(resolutions[conflict.incoming.id] ?? "keepExisting") === "keepExisting"}
-                    onChange={() =>
-                      setResolutions((current) => ({ ...current, [conflict.incoming.id]: "keepExisting" }))
-                    }
-                  />
-                  Keep Existing
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name={conflict.incoming.id}
-                    checked={resolutions[conflict.incoming.id] === "keepIncoming"}
-                    onChange={() =>
-                      setResolutions((current) => ({ ...current, [conflict.incoming.id]: "keepIncoming" }))
-                    }
-                  />
-                  Keep Incoming
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name={conflict.incoming.id}
-                    checked={resolutions[conflict.incoming.id] === "keepBoth"}
-                    onChange={() => setResolutions((current) => ({ ...current, [conflict.incoming.id]: "keepBoth" }))}
-                  />
-                  Keep Both
-                </label>
-              </div>
-            </div>
-          ))}
-
+          <p className="preview-stat">Applying this import will replace your current tracker state.</p>
           <button className="primary" onClick={apply}>
-            Apply Import
+            Replace All
           </button>
         </div>
       )}

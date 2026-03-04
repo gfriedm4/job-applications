@@ -25,10 +25,6 @@
     padding: 0.85rem;
   }
 
-  .onboarding-steps li {
-    padding: 0.7rem;
-  }
-
   .onboarding-actions {
     display: grid;
     grid-template-columns: 1fr;
@@ -60,11 +56,6 @@
   .table-toolbar {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .bulk-actions {
-    display: grid;
-    grid-template-columns: 1fr;
   }
 
   .jobs-table {
@@ -111,10 +102,6 @@
   .reminder-date-group,
   .timeline-date-group {
     justify-items: start;
-  }
-
-  .document-head {
-    flex-wrap: wrap;
   }
 
   .form-grid {

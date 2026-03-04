@@ -85,20 +85,10 @@ const HomeView = () => {
   const [isPasteOpen, setIsPasteOpen] = useState(false);
   const [isAiSettingsOpen, setIsAiSettingsOpen] = useState(false);
   const [aiSettings, setAiSettings] = useState<AiSettings>(() => loadAiSettings());
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const jobs = useMemo(() => selectFilteredJobs(state), [state]);
   const isEmpty = state.jobs.length === 0;
   const hasOpenAiKey = Boolean(aiSettings.openAiApiKey.trim());
-
-  const toggleSelected = (id: string, selected: boolean) => {
-    setSelectedIds((current) => {
-      if (selected) {
-        return Array.from(new Set([...current, id]));
-      }
-      return current.filter((value) => value !== id);
-    });
-  };
 
   const onCreate = (draft: JobDraft) => {
     dispatch({ type: "createJob", payload: draft });
@@ -120,25 +110,7 @@ const HomeView = () => {
   const onClearDashboardData = () => {
     dispatch({ type: "replaceState", payload: EMPTY_STATE });
     clearPendingImport();
-    setSelectedIds([]);
     setIsAiSettingsOpen(false);
-  };
-
-  const onSelectAll = (checked: boolean) => {
-    setSelectedIds(checked ? jobs.map((job) => job.id) : []);
-  };
-
-  const onBulkStatus = (status: JobStatus) => {
-    if (selectedIds.length === 0) {
-      return;
-    }
-
-    dispatch({ type: "bulkStatus", payload: { ids: selectedIds, status } });
-    setSelectedIds([]);
-  };
-
-  const onLoadSeedData = () => {
-    dispatch({ type: "loadSeedData" });
   };
 
   return (
@@ -171,7 +143,6 @@ const HomeView = () => {
           onOpenSettings={() => setIsAiSettingsOpen(true)}
           onAddJob={openManualCreate}
           onPasteJobDescription={() => setIsPasteOpen(true)}
-          onLoadSampleData={onLoadSeedData}
         />
       ) : (
         <>
@@ -242,13 +213,7 @@ const HomeView = () => {
             </label>
           </section>
 
-          <JobsTable
-            jobs={jobs}
-            selectedIds={selectedIds}
-            onToggleSelected={toggleSelected}
-            onSelectAll={onSelectAll}
-            onBulkStatus={onBulkStatus}
-          />
+          <JobsTable jobs={jobs} />
         </>
       )}
 

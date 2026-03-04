@@ -6,10 +6,9 @@ A local-only React + TypeScript app for tracking job applications with localStor
 - No backend, no authentication.
 - localStorage-only persistence (`jobTracker.v1.state`).
 - Fixed status pipeline: `Wishlist`, `Applied`, `Interview`, `Offer`, `Rejected`, `Archived`.
-- One-click sample seed dataset (`Load Sample Data`) for demos/interviews when the tracker is empty.
 - Table-first desktop workflow with mobile card layout.
 - Dashboard funnel metrics and in-app reminder counts.
-- JSON export/import with schema versioning and conflict resolver.
+- JSON export/import with schema versioning and full-state replace import.
 - Optional AI-assisted job draft generation from pasted job descriptions (client-side OpenAI API calls).
 
 ## Setup
@@ -33,10 +32,7 @@ The app uses hash routes (`#/...`) and Vite `base: "./"` so static file navigati
 
 ## Import/Export
 - Export from the `Import / Export` panel as a JSON file.
-- Import the JSON on another device and resolve record conflicts per matching `id`:
-  - Keep Existing
-  - Keep Incoming
-  - Keep Both
+- Import a JSON export to replace the current local tracker state.
 
 ## AI-Assisted Drafts (Optional)
 - Open `AI Settings` in the header and save your OpenAI API key.

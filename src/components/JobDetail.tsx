@@ -55,8 +55,6 @@ const getReminderTone = (reminder: Reminder): "upcoming" | "overdue" | "complete
   return dueDate < today ? "overdue" : "upcoming";
 };
 
-const isHttpUrl = (value: string) => /^https?:\/\//i.test(value);
-
 const formatRelativeDay = (dueDateValue: string) => {
   const dueDate = parseDateInput(dueDateValue);
   if (!dueDate) {
@@ -83,31 +81,13 @@ const formatRelativeTime = (value: string) => {
   return relativeFormatter.format(Math.round(diffMs / 86_400_000), "day");
 };
 
-const getDocumentKind = (value: string) => {
-  if (isHttpUrl(value)) {
-    return "URL";
-  }
-
-  const fileName = value.split(/[\\/]/).pop() ?? value;
-  const extension = fileName.includes(".") ? fileName.slice(fileName.lastIndexOf(".") + 1) : "";
-  if (!extension) {
-    return "FILE";
-  }
-
-  const normalized = extension.slice(0, 6).toUpperCase();
-  return normalized || "FILE";
-};
 
 export const JobDetail = ({ job, onPatch, onAddReminder, onToggleReminder, onAddTimelineNote }: Props) => {
   const [noteText, setNoteText] = useState("");
   const [reminderText, setReminderText] = useState("");
   const [reminderDate, setReminderDate] = useState("");
-  const [docLabel, setDocLabel] = useState("");
-  const [docPath, setDocPath] = useState("");
   const completedReminders = job.reminders.filter((reminder) => reminder.completed).length;
   const overdueReminders = job.reminders.filter((reminder) => getReminderTone(reminder) === "overdue").length;
-  const linkedDocuments = job.documents.filter((document) => isHttpUrl(document.pathOrUrl)).length;
-  const localDocuments = job.documents.length - linkedDocuments;
   const timelineNotes = job.timelineEvents.filter((event) => event.type === "noteAdded").length;
 
   const submitReminder = (event: FormEvent) => {
@@ -129,26 +109,6 @@ export const JobDetail = ({ job, onPatch, onAddReminder, onToggleReminder, onAdd
 
     onAddTimelineNote(noteText.trim());
     setNoteText("");
-  };
-
-  const submitDocument = (event: FormEvent) => {
-    event.preventDefault();
-    if (!docLabel.trim() || !docPath.trim()) {
-      return;
-    }
-
-    onPatch({
-      documents: [
-        {
-          id: `${Date.now()}`,
-          label: docLabel.trim(),
-          pathOrUrl: docPath.trim()
-        },
-        ...job.documents
-      ]
-    });
-    setDocLabel("");
-    setDocPath("");
   };
 
   return (
@@ -249,57 +209,6 @@ export const JobDetail = ({ job, onPatch, onAddReminder, onToggleReminder, onAdd
                   </li>
                 );
               })}
-            </ul>
-          )}
-        </article>
-
-        <article className="detail-card detail-card--documents">
-          <div className="section-heading">
-            <div className="section-title-block">
-              <h2>Documents</h2>
-              <p className="section-subtitle">Keep every application artifact in one verifiable source of truth.</p>
-            </div>
-            <div className="section-stats">
-              <span className="section-count">{job.documents.length}</span>
-              {localDocuments > 0 ? <span className="stat-chip">{localDocuments} files</span> : null}
-              {linkedDocuments > 0 ? <span className="stat-chip">{linkedDocuments} links</span> : null}
-            </div>
-          </div>
-          <form className="inline-form documents-form section-composer" onSubmit={submitDocument}>
-            <input
-              placeholder="Label (e.g., Resume v4)"
-              value={docLabel}
-              onChange={(event) => setDocLabel(event.target.value)}
-            />
-            <input
-              placeholder="Path or URL"
-              value={docPath}
-              onChange={(event) => setDocPath(event.target.value)}
-            />
-            <button type="submit" className="primary" disabled={!docLabel.trim() || !docPath.trim()}>
-              Attach
-            </button>
-          </form>
-          <p className="composer-hint">Use labels that match what was sent to the company.</p>
-          {job.documents.length === 0 ? (
-            <p className="empty-state">No documents yet. Start with your submitted resume and job description.</p>
-          ) : (
-            <ul className="detail-list document-list">
-              {job.documents.map((document) => (
-                <li key={document.id} className="document-item">
-                  <div className="document-head">
-                    <p className="document-label">{document.label}</p>
-                    <span className="document-kind">{getDocumentKind(document.pathOrUrl)}</span>
-                  </div>
-                  {isHttpUrl(document.pathOrUrl) ? (
-                    <a href={document.pathOrUrl} target="_blank" rel="noreferrer" className="document-link">
-                      {document.pathOrUrl}
-                    </a>
-                  ) : (
-                    <code className="document-path">{document.pathOrUrl}</code>
-                  )}
-                </li>
-              ))}
             </ul>
           )}
         </article>

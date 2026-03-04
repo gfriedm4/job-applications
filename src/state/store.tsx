@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useReducer, useState } from "react";
 import { EMPTY_STATE, STORAGE_KEY } from "../lib/constants";
-import { AppState, ConflictItem, JobRecord, JobStatus, Reminder, TimelineEvent, UIPreferences } from "../lib/types";
-import { applyConflictResolutions, readImportPreview, serializeExport } from "../lib/importExport";
-import { createSeedJobs } from "../lib/seedData";
+import { AppState, JobRecord, JobStatus, Reminder, TimelineEvent, UIPreferences } from "../lib/types";
+import { readReplaceAllImport, serializeExport } from "../lib/importExport";
 import { createId, debounce, nowIso } from "../lib/utils";
 import { migratePayloadToCurrent, validateJob } from "../lib/schema";
 
@@ -21,19 +20,15 @@ export interface JobDraft {
 type AppAction =
   | { type: "createJob"; payload: JobDraft }
   | { type: "updateJob"; payload: { id: string; changes: Partial<JobRecord> } }
-  | { type: "bulkStatus"; payload: { ids: string[]; status: JobStatus } }
-  | { type: "archiveJobs"; payload: { ids: string[] } }
   | { type: "addReminder"; payload: { id: string; reminder: Omit<Reminder, "id" | "createdAt"> } }
   | { type: "toggleReminder"; payload: { jobId: string; reminderId: string; completed: boolean } }
   | { type: "addTimelineNote"; payload: { id: string; message: string } }
-  | { type: "loadSeedData" }
   | { type: "setUi"; payload: Partial<UIPreferences> }
   | { type: "replaceState"; payload: AppState };
 
 interface ImportPreviewState {
-  conflicts: ConflictItem[];
   warnings: string[];
-  inserts: number;
+  jobs: number;
 }
 
 interface StoreContextValue {
@@ -42,7 +37,7 @@ interface StoreContextValue {
   dispatch: React.Dispatch<AppAction>;
   exportJson: () => string;
   readImportFile: (file: File) => Promise<ImportPreviewState>;
-  applyImport: (resolutions: Record<string, NonNullable<ConflictItem["resolution"]>>) => void;
+  applyImport: () => void;
   hasPendingImport: boolean;
   clearPendingImport: () => void;
 }
@@ -97,7 +92,6 @@ const reducer = (state: AppState, action: AppAction): AppState => {
         id: createId(),
         ...action.payload,
         tags: action.payload.tags,
-        documents: [],
         reminders: [],
         timelineEvents: [makeTimelineEvent("created", `Job created with status ${action.payload.status}`)],
         createdAt: now,
@@ -125,51 +119,6 @@ const reducer = (state: AppState, action: AppAction): AppState => {
             ...job,
             ...action.payload.changes,
             timelineEvents,
-            updatedAt: nowIso()
-          };
-        })
-      };
-    }
-
-    case "bulkStatus": {
-      const ids = new Set(action.payload.ids);
-      return {
-        ...state,
-        jobs: state.jobs.map((job) => {
-          if (!ids.has(job.id)) {
-            return job;
-          }
-
-          const timelineEvents = [...job.timelineEvents];
-          if (job.status !== action.payload.status) {
-            timelineEvents.unshift(
-              makeTimelineEvent("statusChanged", `Bulk update: ${job.status} -> ${action.payload.status}`)
-            );
-          }
-
-          return {
-            ...job,
-            status: action.payload.status,
-            timelineEvents,
-            updatedAt: nowIso()
-          };
-        })
-      };
-    }
-
-    case "archiveJobs": {
-      const ids = new Set(action.payload.ids);
-      return {
-        ...state,
-        jobs: state.jobs.map((job) => {
-          if (!ids.has(job.id) || job.status === "Archived") {
-            return job;
-          }
-
-          return {
-            ...job,
-            status: "Archived",
-            timelineEvents: [makeTimelineEvent("statusChanged", `${job.status} -> Archived`), ...job.timelineEvents],
             updatedAt: nowIso()
           };
         })
@@ -236,17 +185,6 @@ const reducer = (state: AppState, action: AppAction): AppState => {
       };
     }
 
-    case "loadSeedData": {
-      if (state.jobs.length > 0) {
-        return state;
-      }
-
-      return {
-        ...state,
-        jobs: createSeedJobs()
-      };
-    }
-
     case "setUi": {
       return {
         ...state,
@@ -271,10 +209,9 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, loaded.state);
   const [storageWarning] = useState<string | null>(loaded.warning);
   const [pendingImport, setPendingImport] = useState<{
-    conflicts: ConflictItem[];
     warnings: string[];
-    inserts: number;
-    apply: (resolutions: Record<string, NonNullable<ConflictItem["resolution"]>>) => void;
+    jobs: number;
+    apply: () => void;
   } | null>(null);
 
   useEffect(() => {
@@ -293,31 +230,28 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
 
   const readImportFile = async (file: File): Promise<ImportPreviewState> => {
     const text = await file.text();
-    const { preview } = readImportPreview(state, text);
+    const { nextState, warnings } = readReplaceAllImport(text);
 
     setPendingImport({
-      conflicts: preview.conflicts,
-      warnings: preview.warnings,
-      inserts: preview.toInsert.length,
-      apply: (resolutions) => {
-        const nextState = applyConflictResolutions(state, preview, resolutions);
+      warnings,
+      jobs: nextState.jobs.length,
+      apply: () => {
         dispatch({ type: "replaceState", payload: nextState });
       }
     });
 
     return {
-      conflicts: preview.conflicts,
-      warnings: preview.warnings,
-      inserts: preview.toInsert.length
+      warnings,
+      jobs: nextState.jobs.length
     };
   };
 
-  const applyImport = (resolutions: Record<string, NonNullable<ConflictItem["resolution"]>>) => {
+  const applyImport = () => {
     if (!pendingImport) {
       return;
     }
 
-    pendingImport.apply(resolutions);
+    pendingImport.apply();
     setPendingImport(null);
   };
 

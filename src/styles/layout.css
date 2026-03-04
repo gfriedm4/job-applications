@@ -128,36 +128,6 @@
   font-size: 0.9rem;
 }
 
-.onboarding-steps {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 0.72rem;
-}
-
-.onboarding-steps li {
-  padding: 0.8rem;
-  border: 1px solid #d8ddeb;
-  border-radius: 12px;
-  background: linear-gradient(150deg, #ffffff, #f7fbff);
-  display: grid;
-  gap: 0.42rem;
-}
-
-.onboarding-steps h3 {
-  font-size: 0.88rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #4a5a73;
-}
-
-.onboarding-steps p {
-  color: #5a6780;
-  font-size: 0.88rem;
-  line-height: 1.42;
-}
-
 .onboarding-actions {
   display: flex;
   flex-wrap: wrap;

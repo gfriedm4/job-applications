@@ -35,44 +35,6 @@
   color: #4b5b74;
 }
 
-.bulk-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.hint-wrap {
-  position: static;
-  display: inline-flex;
-  align-items: center;
-}
-
-.hint-portal {
-  position: fixed;
-  z-index: 1000;
-  max-width: min(260px, calc(100vw - 24px));
-  padding: 0.34rem 0.52rem;
-  border-radius: 8px;
-  background: #1f2a3d;
-  color: #fff;
-  font-size: 0.72rem;
-  line-height: 1.25;
-  box-shadow: 0 10px 22px rgba(14, 19, 31, 0.3);
-  pointer-events: none;
-}
-
-.hint-portal-top {
-  transform: translate(-50%, -100%);
-}
-
-.hint-portal-bottom {
-  transform: translate(-50%, 0);
-}
-
-.bulk-select {
-  min-width: 11.5rem;
-}
-
 .jobs-table {
   width: 100%;
   border-collapse: collapse;

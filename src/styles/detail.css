@@ -148,8 +148,7 @@
   font-size: 0.9rem;
 }
 
-.reminders-form,
-.documents-form {
+.reminders-form {
   grid-template-columns: minmax(8.6rem, 0.95fr) minmax(11rem, 1.25fr) auto;
 }
 
@@ -176,12 +175,6 @@
   background:
     linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(246, 252, 250, 0.96)),
     radial-gradient(circle at 10% 0%, rgba(63, 127, 61, 0.1), transparent 48%);
-}
-
-.detail-card--documents {
-  background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 255, 0.95)),
-    radial-gradient(circle at 90% 0%, rgba(23, 101, 109, 0.11), transparent 52%);
 }
 
 .detail-card--timeline {
@@ -304,62 +297,6 @@
 
 .reminder-item--completed::before {
   background: linear-gradient(180deg, #8ec3a1, #6ea987);
-}
-
-.document-list {
-  gap: 0.52rem;
-}
-
-.document-item {
-  display: grid;
-  gap: 0.32rem;
-}
-
-.document-label {
-  font-weight: 600;
-}
-
-.document-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.6rem;
-}
-
-.document-kind {
-  flex-shrink: 0;
-  border: 1px solid #c3d5f0;
-  background: #edf5ff;
-  color: #345783;
-  border-radius: 999px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 0.12rem 0.4rem;
-}
-
-.document-link {
-  display: inline-block;
-  color: var(--accent);
-  text-decoration: none;
-  word-break: break-word;
-}
-
-.document-link:hover {
-  text-decoration: underline;
-}
-
-.document-path {
-  display: inline-block;
-  font-family: "IBM Plex Mono", "Menlo", monospace;
-  font-size: 0.82rem;
-  padding: 0.12rem 0.36rem;
-  border-radius: 7px;
-  color: #364661;
-  background: #f4f8ff;
-  border: 1px solid #d6deef;
-  word-break: break-all;
 }
 
 .timeline-list {

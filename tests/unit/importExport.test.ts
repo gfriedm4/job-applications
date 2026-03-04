@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyConflictResolutions, detectImportConflicts } from "../../src/lib/importExport";
+import { buildExportPayload, readReplaceAllImport } from "../../src/lib/importExport";
 import { AppState } from "../../src/lib/types";
 
 const makeState = (): AppState => ({
@@ -18,7 +18,6 @@ const makeState = (): AppState => ({
       dateAdded: "2026-02-10",
       status: "Applied",
       tags: [],
-      documents: [],
       reminders: [],
       timelineEvents: [],
       createdAt: "2026-02-10T00:00:00.000Z",
@@ -28,26 +27,37 @@ const makeState = (): AppState => ({
 });
 
 describe("import/export merge", () => {
-  it("splits inserts and conflicts by id", () => {
-    const preview = detectImportConflicts(makeState().jobs, [
-      { ...makeState().jobs[0], company: "Acme 2" },
-      {
-        ...makeState().jobs[0],
-        id: "2",
-        company: "Beta"
-      }
-    ]);
+  it("replaces state from import payload", () => {
+    const exported = buildExportPayload({
+      ...makeState(),
+      jobs: [{ ...makeState().jobs[0], id: "2", company: "Beta" }]
+    });
 
-    expect(preview.conflicts).toHaveLength(1);
-    expect(preview.toInsert).toHaveLength(1);
+    const read = readReplaceAllImport(JSON.stringify(exported));
+    expect(read.nextState.jobs).toHaveLength(1);
+    expect(read.nextState.jobs[0].company).toBe("Beta");
   });
 
-  it("applies keepIncoming resolution", () => {
-    const state = makeState();
-    const incoming = [{ ...state.jobs[0], company: "Updated Co" }];
-    const preview = detectImportConflicts(state.jobs, incoming);
+  it("drops duplicate IDs from imported payload with warning", () => {
+    const duplicate = makeState().jobs[0];
+    const exported = buildExportPayload({
+      ...makeState(),
+      jobs: [duplicate, { ...duplicate, company: "Ignored Duplicate" }]
+    });
 
-    const next = applyConflictResolutions(state, preview, { "1": "keepIncoming" });
-    expect(next.jobs[0].company).toBe("Updated Co");
+    const read = readReplaceAllImport(JSON.stringify(exported));
+    expect(read.nextState.jobs).toHaveLength(1);
+    expect(read.warnings).toHaveLength(1);
+  });
+
+  it("accepts legacy documents field but removes it from next state", () => {
+    const exported = {
+      ...buildExportPayload(makeState()),
+      jobs: [{ ...makeState().jobs[0], documents: [{ id: "doc-1", label: "Resume", pathOrUrl: "https://example.com" }] }]
+    };
+
+    const read = readReplaceAllImport(JSON.stringify(exported));
+    expect(read.nextState.jobs).toHaveLength(1);
+    expect("documents" in (read.nextState.jobs[0] as unknown as Record<string, unknown>)).toBe(false);
   });
 });

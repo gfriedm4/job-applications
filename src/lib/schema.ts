@@ -16,7 +16,7 @@ export const validateJob = (input: unknown): input is JobRecord => {
     return false;
   }
 
-  return Array.isArray(job.tags) && Array.isArray(job.documents) && Array.isArray(job.reminders) && Array.isArray(job.timelineEvents);
+  return Array.isArray(job.tags) && Array.isArray(job.reminders) && Array.isArray(job.timelineEvents);
 };
 
 export const validateExportPayload = (input: unknown): input is ExportPayload => {
@@ -56,7 +56,6 @@ export const migratePayloadToCurrent = (payload: ExportPayload): ExportPayload =
       notes: typeof job.notes === "string" && job.notes.trim() ? job.notes.trim() : undefined,
       sourceType: job.sourceType,
       tags: Array.isArray(job.tags) ? job.tags : [],
-      documents: Array.isArray(job.documents) ? job.documents : [],
       reminders: Array.isArray(job.reminders) ? job.reminders : [],
       timelineEvents: Array.isArray(job.timelineEvents) ? job.timelineEvents : [],
       createdAt: job.createdAt,
