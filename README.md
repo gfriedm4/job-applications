@@ -7,7 +7,7 @@ A local-only React + TypeScript app for tracking job applications with localStor
 - localStorage-only persistence (`jobTracker.v1.state`).
 - Fixed status pipeline: `Wishlist`, `Applied`, `Interview`, `Offer`, `Rejected`, `Archived`.
 - Table-first desktop workflow with mobile card layout.
-- Dashboard funnel metrics and in-app reminder counts.
+- Dashboard funnel metrics and pipeline health summaries.
 - JSON export/import with schema versioning and full-state replace import.
 - Optional AI-assisted job draft generation from pasted job descriptions (client-side OpenAI API calls).
 

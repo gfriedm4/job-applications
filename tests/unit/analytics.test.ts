@@ -10,7 +10,6 @@ const sampleJobs: JobRecord[] = [
     dateAdded: "2026-01-01",
     status: "Applied",
     tags: [],
-    reminders: [{ id: "r1", dueDate: "2099-01-01", text: "future", completed: false, createdAt: "2026-01-01T00:00:00.000Z" }],
     timelineEvents: [],
     createdAt: "2026-01-01T00:00:00.000Z",
     updatedAt: "2026-01-01T00:00:00.000Z"
@@ -22,7 +21,6 @@ const sampleJobs: JobRecord[] = [
     dateAdded: "2026-01-01",
     status: "Interview",
     tags: [],
-    reminders: [{ id: "r2", dueDate: "2000-01-01", text: "old", completed: false, createdAt: "2026-01-01T00:00:00.000Z" }],
     timelineEvents: [],
     createdAt: "2026-01-01T00:00:00.000Z",
     updatedAt: "2026-01-01T00:00:00.000Z"
@@ -34,7 +32,6 @@ const sampleJobs: JobRecord[] = [
     dateAdded: "2026-01-01",
     status: "Offer",
     tags: [],
-    reminders: [],
     timelineEvents: [],
     createdAt: "2026-01-01T00:00:00.000Z",
     updatedAt: "2026-01-01T00:00:00.000Z"

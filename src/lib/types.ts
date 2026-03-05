@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export const JOB_STATUSES = [
   "Wishlist",
@@ -12,14 +12,6 @@ export const JOB_STATUSES = [
 export type JobStatus = (typeof JOB_STATUSES)[number];
 
 export type TimelineEventType = "created" | "statusChanged" | "noteAdded" | "updated";
-
-export interface Reminder {
-  id: string;
-  dueDate: string;
-  text: string;
-  completed: boolean;
-  createdAt: string;
-}
 
 export interface TimelineEvent {
   id: string;
@@ -39,7 +31,6 @@ export interface JobRecord {
   notes?: string;
   tags: string[];
   sourceType?: string;
-  reminders: Reminder[];
   timelineEvents: TimelineEvent[];
   createdAt: string;
   updatedAt: string;

@@ -15,7 +15,7 @@ export const EmptyDashboardWalkthrough = ({
     <section className="onboarding-shell" aria-label="getting started walkthrough">
       <header className="onboarding-header">
         <h2>Start Tracking Your Applications</h2>
-        <p>Add your first role to unlock dashboard metrics, reminders, and progress tracking.</p>
+        <p>Add your first role to unlock dashboard metrics and progress tracking.</p>
       </header>
 
       <div className="onboarding-actions">

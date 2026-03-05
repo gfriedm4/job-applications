@@ -122,7 +122,7 @@ export const SettingsModal = ({
 
         <section className="settings-danger-zone" aria-labelledby="settings-danger-zone-title">
           <h3 id="settings-danger-zone-title">Danger Zone</h3>
-          <p className="step-hint">This permanently removes all job records, reminders, timeline notes, and dashboard filters.</p>
+          <p className="step-hint">This permanently removes all job records, timeline notes, and dashboard filters.</p>
           {isClearConfirmOpen ? (
             <div className="settings-danger-confirm">
               <p>Clear all dashboard data now? This action cannot be undone.</p>

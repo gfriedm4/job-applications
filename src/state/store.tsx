@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useReducer, useState } from "react";
 import { EMPTY_STATE, STORAGE_KEY } from "../lib/constants";
-import { AppState, JobRecord, JobStatus, Reminder, TimelineEvent, UIPreferences } from "../lib/types";
+import { AppState, JobRecord, JobStatus, TimelineEvent, UIPreferences } from "../lib/types";
 import { readReplaceAllImport, serializeExport } from "../lib/importExport";
 import { createId, debounce, nowIso } from "../lib/utils";
 import { migratePayloadToCurrent, validateJob } from "../lib/schema";
@@ -20,8 +20,6 @@ export interface JobDraft {
 type AppAction =
   | { type: "createJob"; payload: JobDraft }
   | { type: "updateJob"; payload: { id: string; changes: Partial<JobRecord> } }
-  | { type: "addReminder"; payload: { id: string; reminder: Omit<Reminder, "id" | "createdAt"> } }
-  | { type: "toggleReminder"; payload: { jobId: string; reminderId: string; completed: boolean } }
   | { type: "addTimelineNote"; payload: { id: string; message: string } }
   | { type: "setUi"; payload: Partial<UIPreferences> }
   | { type: "replaceState"; payload: AppState };
@@ -92,7 +90,6 @@ const reducer = (state: AppState, action: AppAction): AppState => {
         id: createId(),
         ...action.payload,
         tags: action.payload.tags,
-        reminders: [],
         timelineEvents: [makeTimelineEvent("created", `Job created with status ${action.payload.status}`)],
         createdAt: now,
         updatedAt: now
@@ -119,49 +116,6 @@ const reducer = (state: AppState, action: AppAction): AppState => {
             ...job,
             ...action.payload.changes,
             timelineEvents,
-            updatedAt: nowIso()
-          };
-        })
-      };
-    }
-
-    case "addReminder": {
-      return {
-        ...state,
-        jobs: state.jobs.map((job) => {
-          if (job.id !== action.payload.id) {
-            return job;
-          }
-
-          const reminder: Reminder = {
-            id: createId(),
-            createdAt: nowIso(),
-            ...action.payload.reminder
-          };
-
-          return {
-            ...job,
-            reminders: [reminder, ...job.reminders],
-            timelineEvents: [makeTimelineEvent("updated", `Reminder added: ${reminder.text}`), ...job.timelineEvents],
-            updatedAt: nowIso()
-          };
-        })
-      };
-    }
-
-    case "toggleReminder": {
-      return {
-        ...state,
-        jobs: state.jobs.map((job) => {
-          if (job.id !== action.payload.jobId) {
-            return job;
-          }
-
-          return {
-            ...job,
-            reminders: job.reminders.map((reminder) =>
-              reminder.id === action.payload.reminderId ? { ...reminder, completed: action.payload.completed } : reminder
-            ),
             updatedAt: nowIso()
           };
         })
