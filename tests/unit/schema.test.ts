@@ -3,7 +3,7 @@ import { migratePayloadToCurrent, validateExportPayload } from "../../src/lib/sc
 import { ExportPayload, SCHEMA_VERSION } from "../../src/lib/types";
 
 const validPayload: ExportPayload = {
-  schemaVersion: 1,
+  schemaVersion: SCHEMA_VERSION,
   exportedAt: "2026-02-27T00:00:00.000Z",
   appMeta: { appName: "x", appVersion: "y" },
   jobs: [
@@ -14,7 +14,6 @@ const validPayload: ExportPayload = {
       dateAdded: "2026-02-20",
       status: "Applied",
       tags: [],
-      reminders: [],
       timelineEvents: [],
       createdAt: "2026-02-20T00:00:00.000Z",
       updatedAt: "2026-02-20T00:00:00.000Z"
@@ -59,5 +58,21 @@ describe("schema", () => {
 
     const migrated = migratePayloadToCurrent(legacyPayload);
     expect("documents" in (migrated.jobs[0] as unknown as Record<string, unknown>)).toBe(false);
+  });
+
+  it("drops legacy reminders during migration", () => {
+    const legacyPayload = {
+      ...validPayload,
+      schemaVersion: 1,
+      jobs: [
+        {
+          ...validPayload.jobs[0],
+          reminders: [{ id: "r1", dueDate: "2026-03-01", text: "Follow up", completed: false, createdAt: "2026-03-01T00:00:00.000Z" }]
+        }
+      ]
+    } as unknown as ExportPayload;
+
+    const migrated = migratePayloadToCurrent(legacyPayload);
+    expect("reminders" in (migrated.jobs[0] as unknown as Record<string, unknown>)).toBe(false);
   });
 });

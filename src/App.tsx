@@ -325,12 +325,6 @@ const DetailView = () => {
         <JobDetail
           job={job}
           onPatch={(changes) => dispatch({ type: "updateJob", payload: { id: job.id, changes } })}
-          onAddReminder={(dueDate, text) =>
-            dispatch({ type: "addReminder", payload: { id: job.id, reminder: { dueDate, text, completed: false } } })
-          }
-          onToggleReminder={(reminderId, completed) =>
-            dispatch({ type: "toggleReminder", payload: { jobId: job.id, reminderId, completed } })
-          }
           onAddTimelineNote={(message) => dispatch({ type: "addTimelineNote", payload: { id: job.id, message } })}
         />
       </Suspense>

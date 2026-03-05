@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { buildExportPayload, readReplaceAllImport } from "../../src/lib/importExport";
-import { AppState } from "../../src/lib/types";
+import { AppState, SCHEMA_VERSION } from "../../src/lib/types";
 
 const makeState = (): AppState => ({
-  schemaVersion: 1,
+  schemaVersion: SCHEMA_VERSION,
   uiPreferences: {
     statusFilter: "All",
     searchText: "",
@@ -18,7 +18,6 @@ const makeState = (): AppState => ({
       dateAdded: "2026-02-10",
       status: "Applied",
       tags: [],
-      reminders: [],
       timelineEvents: [],
       createdAt: "2026-02-10T00:00:00.000Z",
       updatedAt: "2026-02-10T00:00:00.000Z"

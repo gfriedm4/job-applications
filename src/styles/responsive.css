@@ -88,18 +88,11 @@
     padding: 0.58rem;
   }
 
-  .reminder-item {
-    grid-template-columns: 1fr;
-    padding-left: 0.95rem;
-  }
-
-  .reminder-meta,
   .timeline-meta {
     justify-content: flex-start;
     flex-wrap: wrap;
   }
 
-  .reminder-date-group,
   .timeline-date-group {
     justify-items: start;
   }

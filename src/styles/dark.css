@@ -45,9 +45,6 @@
 :root[data-theme="dark"] .detail-meta,
 :root[data-theme="dark"] .section-subtitle,
 :root[data-theme="dark"] .composer-hint,
-:root[data-theme="dark"] .reminder-created,
-:root[data-theme="dark"] .reminder-meta,
-:root[data-theme="dark"] .reminder-date-group small,
 :root[data-theme="dark"] .timeline-meta,
 :root[data-theme="dark"] .timeline-date-group small,
 :root[data-theme="dark"] .empty-state,
@@ -241,12 +238,6 @@
   color: #d5e3f8;
 }
 
-:root[data-theme="dark"] .stat-chip--overdue {
-  border-color: #9a6a64;
-  background: #4f3132;
-  color: #ffd2ca;
-}
-
 :root[data-theme="dark"] .empty-state {
   border-color: #4d6786;
   background: linear-gradient(160deg, #1b2f45, #1a2c3f);
@@ -265,47 +256,10 @@
     );
 }
 
-:root[data-theme="dark"] .detail-card--reminders {
-  background:
-    linear-gradient(160deg, rgba(28, 46, 68, 0.95), rgba(24, 39, 58, 0.97)),
-    radial-gradient(circle at 10% 0%, rgba(118, 170, 255, 0.17), transparent 48%);
-}
-
 :root[data-theme="dark"] .detail-card--timeline {
   background:
     linear-gradient(160deg, rgba(30, 43, 62, 0.96), rgba(31, 36, 50, 0.95)),
     radial-gradient(circle at 90% 100%, rgba(216, 163, 87, 0.18), transparent 50%);
-}
-
-:root[data-theme="dark"] .reminder-item {
-  background: linear-gradient(90deg, rgba(95, 131, 183, 0.22) 0%, rgba(53, 78, 114, 0.2) 30%, #21354d 72%);
-}
-
-:root[data-theme="dark"] .reminder-item--overdue {
-  border-color: #9d6962;
-  background: linear-gradient(90deg, rgba(179, 109, 98, 0.25) 0%, rgba(100, 57, 57, 0.2) 30%, #3a2a32 72%);
-}
-
-:root[data-theme="dark"] .reminder-item--completed {
-  border-color: #5d7da4;
-  background: linear-gradient(90deg, rgba(93, 133, 187, 0.26) 0%, rgba(58, 88, 127, 0.22) 30%, #203349 72%);
-}
-
-:root[data-theme="dark"] .meta-pill {
-  border-color: #5b779b;
-}
-
-:root[data-theme="dark"] .meta-pill--upcoming,
-:root[data-theme="dark"] .meta-pill--completed {
-  color: #c2dcff;
-  border-color: #5d7ea8;
-  background: #274261;
-}
-
-:root[data-theme="dark"] .meta-pill--overdue {
-  color: #ffd2ca;
-  border-color: #9d6660;
-  background: #583637;
 }
 
 :root[data-theme="dark"] .event-chip {

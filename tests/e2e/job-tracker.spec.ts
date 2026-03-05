@@ -49,19 +49,10 @@ test("save dark mode preference in settings", async ({ page }) => {
   await expect(page.getByRole("checkbox", { name: "Dark Mode" })).toBeChecked();
 });
 
-test("add and complete reminders, then log timeline notes", async ({ page }) => {
+test("log timeline notes", async ({ page }) => {
   await page.goto("/#/");
   await createJob(page, "Delta Labs", "Platform Engineer");
   await openJobDetail(page, "Delta Labs");
-
-  await page.locator(".reminders-form input[type='date']").fill("2030-01-15");
-  await page.getByPlaceholder("What needs to happen next?").fill("Send follow-up email");
-  await page.getByRole("button", { name: "Add Reminder" }).click();
-
-  const reminderItem = page.locator(".reminder-item").filter({ hasText: "Send follow-up email" }).first();
-  await expect(reminderItem.getByText("Send follow-up email")).toBeVisible();
-  await reminderItem.getByRole("checkbox").check();
-  await expect(reminderItem.getByText("Done")).toBeVisible();
 
   await page.getByPlaceholder("What changed, and why?").fill("Reached out to recruiter");
   await page.getByRole("button", { name: "Log Note" }).click();
