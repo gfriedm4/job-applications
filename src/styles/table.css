@@ -59,7 +59,38 @@
   color: #5b6780;
 }
 
+.sort-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.sort-header:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.sort-header-active {
+  color: #344867;
+}
+
+.sort-indicator {
+  font-size: 0.9em;
+  opacity: 0.75;
+}
+
 .jobs-table tbody tr {
+  position: relative;
+  cursor: pointer;
   transition: background 100ms ease;
 }
 
@@ -67,8 +98,24 @@
   background: #f7fafc;
 }
 
+.jobs-table tbody tr:focus-within {
+  background: #f7fafc;
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
 .row-archived {
   opacity: 0.55;
+}
+
+.row-overlay-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.row-overlay-link:focus-visible {
+  outline: none;
 }
 
 .table-link {

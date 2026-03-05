@@ -103,7 +103,15 @@
   border-bottom-color: #324962;
 }
 
+:root[data-theme="dark"] .sort-header-active {
+  color: #d3e5ff;
+}
+
 :root[data-theme="dark"] .jobs-table tbody tr:hover {
+  background: #213952;
+}
+
+:root[data-theme="dark"] .jobs-table tbody tr:focus-within {
   background: #213952;
 }
 

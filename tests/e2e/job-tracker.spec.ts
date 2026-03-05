@@ -18,7 +18,7 @@ const openJobDetail = async (page: Page, company: string) => {
   } else {
     const row = page.getByRole("row").filter({ has: page.getByRole("cell", { name: company }) }).first();
     await expect(row.getByRole("cell", { name: company })).toBeVisible();
-    await row.getByRole("link", { name: "Open" }).click();
+    await row.click();
   }
 };
 
@@ -33,6 +33,16 @@ test("create and inspect a job", async ({ page }) => {
   await createJob(page, "Acme Co", "Backend Engineer");
   await openJobDetail(page, "Acme Co");
   await expect(page.getByRole("heading", { name: /Acme Co - Backend Engineer/ })).toBeVisible();
+});
+
+test("return to list with Escape from job detail", async ({ page }) => {
+  await page.goto("/#/");
+  await createJob(page, "Escape Co", "Frontend Engineer");
+  await openJobDetail(page, "Escape Co");
+  await expect(page.getByRole("heading", { name: /Escape Co - Frontend Engineer/ })).toBeVisible();
+
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("heading", { name: "Job Application Tracker" })).toBeVisible();
 });
 
 test("save dark mode preference in settings", async ({ page }) => {

@@ -39,7 +39,7 @@ export interface JobRecord {
 export interface UIPreferences {
   statusFilter: JobStatus | "All";
   searchText: string;
-  sortBy: "updatedAt" | "company" | "dateAdded" | "status";
+  sortBy: "updatedAt" | "company" | "roleTitle" | "dateAdded" | "status";
   sortDirection: "asc" | "desc";
 }
 
