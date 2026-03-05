@@ -1,6 +1,5 @@
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import { HashRouter, Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
-import { JobFormModal } from "./components/JobFormModal";
 import { AiSettings, loadAiSettings, saveAiSettings } from "./lib/aiSettings";
 import { EMPTY_STATE } from "./lib/constants";
 import { JOB_STATUSES, JobStatus } from "./lib/types";
@@ -20,6 +19,7 @@ const Dashboard = lazy(() => import("./components/Dashboard").then((module) => (
 const EmptyDashboardWalkthrough = lazy(() =>
   import("./components/EmptyDashboardWalkthrough").then((module) => ({ default: module.EmptyDashboardWalkthrough }))
 );
+const JobFormModal = lazy(() => import("./components/JobFormModal").then((module) => ({ default: module.JobFormModal })));
 const JobsTable = lazy(() => import("./components/JobsTable").then((module) => ({ default: module.JobsTable })));
 const JobDetail = lazy(() => import("./components/JobDetail").then((module) => ({ default: module.JobDetail })));
 const PasteJobDescriptionModal = lazy(() =>
@@ -253,16 +253,18 @@ const HomeView = () => {
       )}
 
       {isCreateOpen && (
-        <JobFormModal
-          title="Add Job"
-          isOpen={isCreateOpen}
-          initial={initialDraft}
-          onClose={() => {
-            setIsCreateOpen(false);
-            setInitialDraft(undefined);
-          }}
-          onSave={onCreate}
-        />
+        <Suspense fallback={null}>
+          <JobFormModal
+            title="Add Job"
+            isOpen={isCreateOpen}
+            initial={initialDraft}
+            onClose={() => {
+              setIsCreateOpen(false);
+              setInitialDraft(undefined);
+            }}
+            onSave={onCreate}
+          />
+        </Suspense>
       )}
     </main>
   );

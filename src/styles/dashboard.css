@@ -63,7 +63,7 @@
 }
 
 .metric-value {
-  font-family: "IBM Plex Mono", "Menlo", monospace;
+  font-family: "Menlo", "Consolas", "Lucida Console", monospace;
   font-weight: 600;
   font-size: 1.4rem;
   color: #1f2738;

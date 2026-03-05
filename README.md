@@ -5,6 +5,7 @@ A local-only React + TypeScript app for tracking job applications with localStor
 ## Highlights
 - No backend, no authentication.
 - localStorage-only persistence (`jobTracker.v1.state`).
+- No third-party runtime assets for fonts or UI dependencies (local-first rendering).
 - Fixed status pipeline: `Wishlist`, `Applied`, `Interview`, `Offer`, `Rejected`, `Archived`.
 - Table-first desktop workflow with sortable column headers and mobile card layout.
 - Clickable desktop table rows with keyboard-focus navigation to job details.

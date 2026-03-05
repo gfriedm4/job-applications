@@ -4,7 +4,7 @@
 
 body {
   margin: 0;
-  font-family: "Sora", "Avenir Next", "Segoe UI", sans-serif;
+  font-family: "Avenir Next", "Segoe UI", "Trebuchet MS", sans-serif;
   color: var(--ink);
   background:
     radial-gradient(1200px 560px at 10% -12%, var(--bg-glow-left) 0%, transparent 62%),
@@ -44,7 +44,7 @@ h2,
 h3,
 h4 {
   margin: 0;
-  font-family: "IBM Plex Mono", "Menlo", monospace;
+  font-family: "Menlo", "Consolas", "Lucida Console", monospace;
   letter-spacing: -0.01em;
 }
 
