@@ -30,7 +30,7 @@
 }
 
 .table-count {
-  font-family: "IBM Plex Mono", "Menlo", monospace;
+  font-family: "Menlo", "Consolas", "Lucida Console", monospace;
   font-size: 0.85rem;
   color: #4b5b74;
 }

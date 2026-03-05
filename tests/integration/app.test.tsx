@@ -15,8 +15,8 @@ describe("app integration", () => {
     render(<App />);
 
     await user.click(screen.getByRole("button", { name: "Add Job" }));
-    await user.type(screen.getByLabelText(/Company/i), "Acme Inc");
-    await user.type(screen.getByLabelText(/Role Title/i), "Platform Engineer");
+    await user.type(await screen.findByLabelText(/Company/i), "Acme Inc");
+    await user.type(await screen.findByLabelText(/Role Title/i), "Platform Engineer");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Save Job" }));
 
@@ -29,8 +29,8 @@ describe("app integration", () => {
     render(<App />);
 
     await user.click(screen.getByRole("button", { name: "Add Job" }));
-    await user.type(screen.getByLabelText(/Company/i), "Acme Inc");
-    await user.type(screen.getByLabelText(/Role Title/i), "Platform Engineer");
+    await user.type(await screen.findByLabelText(/Company/i), "Acme Inc");
+    await user.type(await screen.findByLabelText(/Role Title/i), "Platform Engineer");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Save Job" }));
 
@@ -68,7 +68,7 @@ describe("app integration", () => {
     const firstRender = render(<App />);
 
     await user.click(screen.getByRole("button", { name: "Add Job" }));
-    expect(screen.getByRole("heading", { name: "Add Job" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Add Job" })).toBeInTheDocument();
     await user.keyboard("{Escape}");
     await waitFor(() => {
       expect(screen.queryByRole("heading", { name: "Add Job" })).not.toBeInTheDocument();
@@ -105,8 +105,8 @@ describe("app integration", () => {
     render(<App />);
 
     await user.click(screen.getByRole("button", { name: "Add Job" }));
-    await user.type(screen.getByLabelText(/Company/i), "Acme Inc");
-    await user.type(screen.getByLabelText(/Role Title/i), "Platform Engineer");
+    await user.type(await screen.findByLabelText(/Company/i), "Acme Inc");
+    await user.type(await screen.findByLabelText(/Role Title/i), "Platform Engineer");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Save Job" }));
 
@@ -122,14 +122,14 @@ describe("app integration", () => {
     render(<App />);
 
     await user.click(screen.getByRole("button", { name: "Add Job" }));
-    await user.type(screen.getByLabelText("Company *"), "Acme Inc");
-    await user.type(screen.getByLabelText("Role Title *"), "Backend Engineer");
+    await user.type(await screen.findByLabelText("Company *"), "Acme Inc");
+    await user.type(await screen.findByLabelText("Role Title *"), "Backend Engineer");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Save Job" }));
 
     await user.click(screen.getByRole("button", { name: "Add Job" }));
-    await user.type(screen.getByLabelText("Company *"), "Beta Corp");
-    await user.type(screen.getByLabelText("Role Title *"), "Frontend Engineer");
+    await user.type(await screen.findByLabelText("Company *"), "Beta Corp");
+    await user.type(await screen.findByLabelText("Role Title *"), "Frontend Engineer");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Save Job" }));
 
