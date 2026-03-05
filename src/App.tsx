@@ -3,7 +3,6 @@ import { HashRouter, Navigate, Route, Routes, useNavigate, useParams } from "rea
 import { JobFormModal } from "./components/JobFormModal";
 import { AiSettings, loadAiSettings, saveAiSettings } from "./lib/aiSettings";
 import { EMPTY_STATE } from "./lib/constants";
-import { buildExportFilename } from "./lib/importExport";
 import { JOB_STATUSES, JobStatus } from "./lib/types";
 import { selectFilteredJobs, selectJobById } from "./lib/selectors";
 import { JobDraft, StoreProvider, useStore } from "./state/store";
@@ -120,21 +119,6 @@ const HomeView = () => {
     setIsSettingsOpen(false);
   };
 
-  const exportJobs = () => {
-    const json = exportJson();
-    const anchor = document.createElement("a");
-    const blob = new Blob([json], { type: "application/json" });
-    const canUseBlobUrl = typeof URL.createObjectURL === "function";
-    const url = canUseBlobUrl ? URL.createObjectURL(blob) : `data:application/json;charset=utf-8,${encodeURIComponent(json)}`;
-
-    anchor.href = url;
-    anchor.download = buildExportFilename();
-    anchor.click();
-    if (canUseBlobUrl && typeof URL.revokeObjectURL === "function") {
-      URL.revokeObjectURL(url);
-    }
-  };
-
   const onClearDashboardData = () => {
     dispatch({ type: "replaceState", payload: EMPTY_STATE });
     clearPendingImport();
@@ -153,11 +137,6 @@ const HomeView = () => {
           <button className="secondary" onClick={() => setIsSettingsOpen(true)}>
             Settings
           </button>
-          {state.jobs.length > 0 && (
-            <button className="secondary" onClick={exportJobs}>
-              Export JSON
-            </button>
-          )}
           {hasOpenAiKey ? (
             <AddJobMenu onEnterManually={openManualCreate} onPasteJobDescription={() => setIsPasteOpen(true)} />
           ) : (
@@ -214,44 +193,24 @@ const HomeView = () => {
                 ))}
               </select>
             </label>
-
-            <label>
-              Sort By
-              <select
-                value={state.uiPreferences.sortBy}
-                onChange={(event) =>
-                  dispatch({
-                    type: "setUi",
-                    payload: { sortBy: event.target.value as typeof state.uiPreferences.sortBy }
-                  })
-                }
-              >
-                <option value="updatedAt">Updated</option>
-                <option value="company">Company</option>
-                <option value="dateAdded">Date Added</option>
-                <option value="status">Status</option>
-              </select>
-            </label>
-
-            <label>
-              Direction
-              <select
-                value={state.uiPreferences.sortDirection}
-                onChange={(event) =>
-                  dispatch({
-                    type: "setUi",
-                    payload: { sortDirection: event.target.value as "asc" | "desc" }
-                  })
-                }
-              >
-                <option value="desc">Desc</option>
-                <option value="asc">Asc</option>
-              </select>
-            </label>
           </section>
 
           <Suspense fallback={null}>
-            <JobsTable jobs={jobs} />
+            <JobsTable
+              jobs={jobs}
+              sortBy={state.uiPreferences.sortBy}
+              sortDirection={state.uiPreferences.sortDirection}
+              onSortChange={(nextSortBy) => {
+                const isSameColumn = state.uiPreferences.sortBy === nextSortBy;
+                dispatch({
+                  type: "setUi",
+                  payload: {
+                    sortBy: nextSortBy,
+                    sortDirection: isSameColumn ? (state.uiPreferences.sortDirection === "asc" ? "desc" : "asc") : "asc"
+                  }
+                });
+              }}
+            />
           </Suspense>
         </>
       )}
@@ -315,6 +274,21 @@ const DetailView = () => {
   const { state, dispatch } = useStore();
 
   const job = selectJobById(state, id);
+
+  useEffect(() => {
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        navigate("/");
+      }
+    };
+
+    document.addEventListener("keydown", onEscape);
+    return () => {
+      document.removeEventListener("keydown", onEscape);
+    };
+  }, [navigate]);
+
   if (!job) {
     return <Navigate to="/" replace />;
   }
